@@ -2,6 +2,7 @@
   "name": "botctracker",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://kylechiasson.github.io/botc-notebook"
   "dependencies": {
     "bootstrap": "^5.1.3",
     "http-proxy-middleware": "^2.0.6",
