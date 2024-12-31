@@ -2,7 +2,6 @@
   "name": "botctracker",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://kylechiasson.github.io/botc-notebook",
   "dependencies": {
     "bootstrap": "^5.1.3",
     "http-proxy-middleware": "^2.0.6",
@@ -73,11 +72,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
   }
 }
