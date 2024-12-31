@@ -1,0 +1,52 @@
+/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
+}
+
+.btn-primary {
+      color: #fff;
+      background-color: #1b6ec2;
+      border-color: #1861ac;
+}
+
+.popup {
+    background-color: #eaeaea;
+    position: absolute;
+    justify-content: center;
+    border: 3px solid orange;
+    width: fit-content;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    margin: auto;
+}
+
+.side-by-side {
+    display: inline;
+    padding: 10px;
+}
+
+.good {
+    color: royalblue !important;
+}
+
+.evil {
+    color: firebrick !important;
+}
+
+.fabled {
+    color: darkgoldenrod !important;
+}
+
+.traveler {
+    color: slateblue !important;
+}
+
+.normalText {
+    border: none;
+    display: inline;
+    font-family: inherit;
+    font-size: inherit;
+    width: auto;
+    background: inherit;
+}
