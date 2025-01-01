@@ -2,6 +2,11 @@
   "name": "botctracker",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://kylechiasson.github.io/botc-notebook",
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
   "dependencies": {
     "bootstrap": "^5.1.3",
     "http-proxy-middleware": "^2.0.6",
