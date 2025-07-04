@@ -20,6 +20,10 @@ function render_page(){
 
 function render_popup(){
     let popup = storage.getItem('popup')
+    let popup_html = document.getElementById(popup_id)
+    let close_popup_html = document.getElementById('close-popup')
+    popup_html.classList.remove('hidden')
+    close_popup_html.classList.remove('hidden')
     val = /*html*/``
     switch(popup){
         case settings_id:
@@ -30,10 +34,10 @@ function render_popup(){
             data = JSON.parse(storage.getItem('characters'))
             val += /*html*/`<table id="character_sheet_table">`
             for(let t = 0; t < teams.length; t++){
-                val += /*html*/`<tr><th>${teams[t]}</th><th></th></tr>`
+                val += /*html*/`<tr class="${teams[t]} underline"><th>${teams[t]}</th><th></th></tr>`
                 for(let i = 0; i < data.length; i++)
                     if(data[i].Team == teams[t])
-                        val += /*html*/`<tr><td>${data[i].Name}</td><td> -${data[i].Ability}</td></tr>`
+                        val += /*html*/`<tr class="${teams[t]}"><td>${data[i].Name}</td><td> -${data[i].Ability}</td></tr>`
             }
             val += /*html*/`</table>`
             break
@@ -42,9 +46,9 @@ function render_popup(){
             data = JSON.parse(storage.getItem('characters'))
             let fno = first_night_order_json.filter(e => data.find(f => f.ID == e) || required_night_order_json.find(f => f == e))
             let ono = other_night_order_json.filter(e => data.find(f => f.ID == e) || required_night_order_json.find(f => f == e))
-            val += /*html*/`<table id="night_order_table"><tr><th>First</th><th>Other</th></tr>`
+            val += /*html*/`<table id="night_order_table"><tr class="left underline"><th>First</th><th>Other</th></tr>`
             for(let i = 0; i < Math.max(fno.length, ono.length); i++)
-                val += /*html*/`<tr><td>${i < fno.length ? fno[i] : ''}</td><td>${i < ono.length ? ono[i] : ''}</tr>`
+                val += /*html*/`<tr><td class="${(data.find(e => e.ID == fno[i]) ?? {"Team":""}).Team}">${i < fno.length ? fno[i] : ''}</td><td class="${(data.find(e => e.ID == ono[i]) ?? {"Team":""}).Team}">${i < ono.length ? ono[i] : ''}</tr>`
             val += /*html*/`</table>`
             break
 
@@ -66,6 +70,11 @@ function render_popup(){
             day_index = storage.getItem('selected_day')
             users = JSON.parse(storage.getItem('users'))
             val = generate_menu(night_tokens, night_tokens.map(e => users[user_index].Nights[day_index].includes(e)))
+            break
+        
+        default:
+            popup_html.classList.add('hidden')
+            close_popup_html.classList.add('hidden')
             break
     }
     document.getElementById(popup_id).innerHTML = val

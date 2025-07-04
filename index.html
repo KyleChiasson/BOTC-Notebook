@@ -4,13 +4,14 @@
         <script type = "text/javascript" src = "html.js" ></script> 
         <script type = "text/javascript" src = "select_menu.js" ></script> 
         <script type = "text/javascript" src = "notes.js" ></script> 
+        <link rel="stylesheet" href="notes.css">
     </head>
     <body onload="init()">
         <div id="popup"></div>
+        <button id="close-popup" onclick="close_windows()" class="hidden"></button>
         <button onclick="open_character_sheet()">Character Sheet</button>
         <button onclick="open_night_order()">Night Order</button>
         <button onclick="open_settings()">Settings</button>
-        <button onclick="close_windows()">X</button>
         <table id="notes_table"></table>
         <textarea>Other Notes</textarea>
     </body>
