@@ -1,10 +1,22 @@
-html {
-    background-color:rgb(100, 23, 96);
-    height: 100%;
-    color: rgb(94, 69, 54);
+:root {
+  --purple: rgb(119, 44, 126);
+  --paper: rgb(255, 255, 235);
+  --paper-highlight: rgb(233, 233, 210);
+  --token: rgb(114, 104, 87);
+  --good: rgb(52, 76, 185);
+  --evil: rgb(153, 9, 9);
+  --text: rgb(94, 69, 54);
+  --button: rgb(230, 230, 230);
+  --button-border: rgb(192, 192, 192);
 }
 
-#close-popup{
+html {
+    background-color:var(--purple);
+    height: 100%;
+    color: var(--text);
+}
+
+#close_popup{
     position: fixed;
     width: 100%;
     height: 100%;
@@ -16,22 +28,20 @@ html {
     background:rgba(0, 0, 0, 0.5);
 }
 
-#close-popup.hidden{
+#close_popup.hidden{
     width: 0;
     height: 0;
 }
 
 #popup{
-    background-color: rgb(255, 255, 235);
-    padding: 50px;
+    background-color: var(--paper);
+    padding: 30px;
     position: absolute; 
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 50px;
-    border: solid #000;
-    border-width: 3px;
-    border-color: rgb(233, 233, 210);
+    border-radius: 30px;
+    border: 3px solid var(--paper-highlight);
     z-index: 10;
 }
 
@@ -41,42 +51,74 @@ html {
 }
 
 #notes_table{
-    background-color: rgb(255, 255, 235);
+    background-color: var(--paper);
+    width: fit-content;
+    border-radius: 10px;
+    border: 5px solid var(--paper-highlight);
+    padding: 10px;
+    margin: auto;
 }
 
-.Townsfolk {
-    color: rgb(52, 76, 185);
+#notes_table input[type="text"]{
+    background-color: var(--paper-highlight);
+    width: 100px;
+    text-align: center;
+    border-style: solid;
+    border-color: var(--paper-highlight);
+    border-radius: 2px;
 }
 
-.Outsiders {
-    color: rgb(40, 67, 189);
+button, select {
+    background-color: var(--button);
+    border: 2px solid var(--button-border);
+    border-radius: 5px;
 }
 
-.Minions {
-    color: rgb(153, 9, 9);
-}
+.Townsfolk, .Outsiders { color: var(--good); }
+.Minions, .Demons { color: var(--evil); }
 
-.Demons {
-    color: rgb(153, 9, 9);
-}
+.underline { text-decoration: underline; }
 
-.underline {
-    text-decoration: underline;
-}
-
-.left {
-    text-align: left;
-}
+.left { text-align: left; }
+.right { text-align: right;}
 
 table {
   border-collapse: separate;
   border-spacing: 10px 0;
 }
 
-td {
-  padding: 5px 0;
+td, th { padding: 5px 0; }
+
+#night_order_table td, #night_order_table th {
+    width: 150px;
 }
 
-th {
-  padding: 5px 0;
+.token {
+    border: 2px solid var(--paper-highlight);
+    background-color: var(--token);
+    border-radius: 5px;
+    padding: 2px;
+    margin: 2px;
+    color: white;
+}
+
+#nav_buttons, #other_notes {
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: fit-content;
+}
+
+#nav_buttons button {
+    width: 150px;
+    height: 30px
+}
+
+input, label {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+form {
+    margin: 0px
 }

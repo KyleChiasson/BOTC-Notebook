@@ -21,7 +21,7 @@ function render_page(){
 function render_popup(){
     let popup = storage.getItem('popup')
     let popup_html = document.getElementById(popup_id)
-    let close_popup_html = document.getElementById('close-popup')
+    let close_popup_html = document.getElementById('close_popup')
     popup_html.classList.remove('hidden')
     close_popup_html.classList.remove('hidden')
     val = /*html*/``
@@ -46,9 +46,9 @@ function render_popup(){
             data = JSON.parse(storage.getItem('characters'))
             let fno = first_night_order_json.filter(e => data.find(f => f.ID == e) || required_night_order_json.find(f => f == e))
             let ono = other_night_order_json.filter(e => data.find(f => f.ID == e) || required_night_order_json.find(f => f == e))
-            val += /*html*/`<table id="night_order_table"><tr class="left underline"><th>First</th><th>Other</th></tr>`
+            val += /*html*/`<table id="night_order_table"><tr><th class="left underline">First</th><th class="right underline">Other</th></tr>`
             for(let i = 0; i < Math.max(fno.length, ono.length); i++)
-                val += /*html*/`<tr><td class="${(data.find(e => e.ID == fno[i]) ?? {"Team":""}).Team}">${i < fno.length ? fno[i] : ''}</td><td class="${(data.find(e => e.ID == ono[i]) ?? {"Team":""}).Team}">${i < ono.length ? ono[i] : ''}</tr>`
+                val += /*html*/`<tr><td class="${(data.find(e => e.ID == fno[i]) ?? {"Team":""}).Team}">${i < fno.length ? fno[i] : ''}</td><td class="${(data.find(e => e.ID == ono[i]) ?? {"Team":""}).Team} right">${i < ono.length ? ono[i] : ''}</tr>`
             val += /*html*/`</table>`
             break
 
@@ -101,13 +101,13 @@ function render_notes(){
                     if(users[i].Nights[a][b] == 'Custom Note')
                         val += /*html*/`<input type="text">`
                     else
-                        val += /*html*/`<a>${users[i].Nights[a][b]}</a>`
+                        val += /*html*/`<a class="token">${users[i].Nights[a][b]}</a>`
                 val += /*html*/`<button onClick="add_night_note(${i}, ${a})">+</button></td><td>`
                 for(let b = 0; b < users[i].Days[a].length; b++)
                     if(users[i].Days[a][b] == 'Custom Note')
                         val += /*html*/`<input type="text">`
                     else
-                        val += /*html*/`<a>${users[i].Days[a][b]}</a>`
+                        val += /*html*/`<a class="token">${users[i].Days[a][b]}</a>`
                 val += /*html*/`<button onClick="add_day_note(${i}, ${a})">+</button></td>`
             }
 
@@ -196,7 +196,7 @@ function set_popup(val){
     storage.setItem('popup', val)
     render_page()
 }
-function close_windows() { set_popup('') }
+function close_windows() { if(storage.getItem('characters') != null) set_popup('') }
 function open_settings() { set_popup(settings_id) }
 function open_character_sheet(){ set_popup(character_sheet_id) }
 function open_night_order(){ set_popup(night_order_id) }
