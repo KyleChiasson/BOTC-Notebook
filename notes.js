@@ -1,4 +1,3 @@
-//constants
 const settings_id = 'settings_form'
 const character_sheet_id = 'character_sheet_table'
 const night_order_id = 'night_order_table'
@@ -12,7 +11,6 @@ const storage = sessionStorage
 const day_tokens = ['Nominated', 'Voted', 'Used Dead Vote', 'Exexuted', 'Died', 'Custom Note']
 const night_tokens = ['Died', 'Revived', 'Custom Note']
 
-//render functions
 function render_page(){
     render_popup()
     render_notes()
@@ -126,14 +124,28 @@ function render_notes(){
     document.getElementById(notes_id).innerHTML = val
 }
 
-//helper functions
 function submit_settings(){
     let script_id = document.forms[settings_id]["script"].value;
-    let script = tb_json
     switch (script_id){
-        case 'snv': script = snv_json; break
-        case 'bmr': script = bmr_json; break
+        case 'tb' : finish_settings(tb_json); break
+        case 'snv': finish_settings(snv_json); break
+        case 'bmr': finish_settings(bmr_json); break
+        case 'custom':
+            try {
+                var file = document.getElementById("custom_script").files[0];
+                var fileReader = new FileReader();
+                fileReader.onload = function(fileLoadedEvent){ finish_settings(JSON.parse(fileLoadedEvent.target.result)) }
+                fileReader.readAsText(file, "UTF-8");
+            } catch (error) {
+                alert("Please upload a valid custom script")
+                return
+            }
+            break
     }
+    return false
+}
+
+function finish_settings(script){
     script.shift()
     let list = []
     for(let i = 0; i < script.length; i++)
@@ -160,7 +172,6 @@ function submit_settings(){
     add_day()
 
     close_windows()
-    return false
 }
 
 function set_popup(val){
@@ -205,10 +216,8 @@ function open_role_select(user_index){
     set_popup(role_select_id) 
 }
 
-//mutator functions
 function init(){
-    if (!storage.getItem('users'))
-        open_settings()
+    if (!storage.getItem('users')) open_settings()
     else render_page()
 }
 
@@ -255,9 +264,6 @@ function add_night_note(user_index, night_number){
  * Todo:
  * Save custom notes and other notes
  * Replace role notes with actual info
- * Save all day/night buttons (could make into tags like roles)
- * Add custom script upload
- * Make CSS
  * Add fabled slot
  * Add known in play slot
  */
