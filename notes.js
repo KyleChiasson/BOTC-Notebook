@@ -170,23 +170,16 @@ function submit_settings(){
             return
         }
     }
-    else{
+    else
         finish_settings(BOTC_JSON.roles.filter(e => e.edition == scriptId && e.team != 'traveller'))
-    }
     return false
 }
 
 function finish_settings(characters){
-    Storage.setItem('characters', JSON.stringify(characters))
     let users = []
-    for(let i = 0; i < document.forms[SettingsId]["count"].value; i++){
-        users.push({})
-        users[i].name = `Player ${i + 1}`
-        users[i].alignment = 'good'
-        users[i].roles = []
-        users[i].nights = []
-        users[i].days = []
-    }
+    for(let i = 0; i < document.forms[SettingsId]["count"].value; i++)
+        users.push({"name": `Player ${i + 1}`, "alignment": 'good', 'roles': [], 'nights': [], 'days': []})
+    Storage.setItem('characters', JSON.stringify(characters))
     Storage.setItem('users', JSON.stringify(users))
     Storage.setItem('days', 0)
     Storage.setItem('known-roles', JSON.stringify([]))
@@ -208,11 +201,8 @@ function set_popup(val){
                     if(oldList.map(e => e.name).includes(list[i].name))
                         users[userIndex].roles.push(oldList.find(e => e.name == list[i].name))
                     else{
-                        users[userIndex].roles.push({})
-                        let last = users[userIndex].roles.length - 1
-                        users[userIndex].roles[last].name = list[i].name
-                        users[userIndex].roles[last].nights = []
-                        users[userIndex].roles[last].days = []
+                        let last = users[userIndex].roles.length
+                        users[userIndex].roles.push({'name': list[i].name, 'nights': [], 'days': []})
                         for(let a = 0; a < dayCount; a++){
                             users[userIndex].roles[last].nights.push('')
                             users[userIndex].roles[last].days.push('')
@@ -228,7 +218,7 @@ function set_popup(val){
             let users = JSON.parse(Storage.getItem('users'))
             users[userIndex].days[dayIndex] = list.filter(e => e.selected).map(e => e.name)
             Storage.setItem('users', JSON.stringify(users))
-            break;
+            break
         }
         case NightTokenSelectId: {
             let list = get_menu_result()
@@ -237,7 +227,7 @@ function set_popup(val){
             let users = JSON.parse(Storage.getItem('users'))
             users[userIndex].nights[dayIndex] = list.filter(e => e.selected).map(e => e.name)
             Storage.setItem('users', JSON.stringify(users))
-            break;
+            break
         }
         case KnownRoleSelectId: {
             let list = get_menu_result()
@@ -249,11 +239,8 @@ function set_popup(val){
                     if(oldList.map(e => e.name).includes(list[i].name))
                         known.push(oldList.find(e => e.name == list[i].name))
                     else{
-                        known.push({})
-                        let last = known.length - 1
-                        known[last].name = list[i].name
-                        known[last].nights = []
-                        known[last].days = []
+                        let last = known.length
+                        known.push({'name': list[i].name, 'nights': [], 'days': []})
                         for(let a = 0; a < dayCount; a++){
                             known[last].nights.push('')
                             known[last].days.push('')
