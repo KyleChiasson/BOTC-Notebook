@@ -1,16 +1,16 @@
-const settings_id = 'settings_form'
-const character_sheet_id = 'character_sheet_table'
-const night_order_id = 'night_order_table'
-const role_select_id = 'role_select'
-const day_token_select_id = 'day_token_select'
-const night_token_select_id = 'night_token_select'
-const known_role_select_id = 'known_role_select'
-const popup_id = 'popup'
-const notes_id = 'notes_table'
-const teams = ['Townsfolk', 'Outsiders', 'Minions', 'Demons']
-const storage = sessionStorage
-const day_tokens = ['Nominated', 'Voted', 'Used Dead Vote', 'Exexuted', 'Died', 'Custom Note']
-const night_tokens = ['Died', 'Revived', 'Custom Note']
+const SettingsId = 'settings-form'
+const CharacterSheetId = 'character-sheet-table'
+const NightOrderId = 'night-order-table'
+const RoleSelectId = 'role-select'
+const DayTokenSelectId = 'day-token-select'
+const NightTokenSelectId = 'night-token-select'
+const KnownRoleSelectId = 'known-role-select'
+const PopupId = 'popup'
+const NotesId = 'notes-table'
+const Teams = ['townsfolk', 'outsider', 'minion', 'demon']
+const Storage = sessionStorage
+const DayTokens = ['Nominated', 'Voted', 'Used Dead Vote', 'Exexuted', 'Died', 'Custom Note']
+const NightTokens = ['Died', 'Revived', 'Custom Note']
 
 function render_page(){
     render_popup()
@@ -18,336 +18,343 @@ function render_page(){
 }
 
 function render_popup(){
-    let popup = storage.getItem('popup')
-    let popup_html = document.getElementById(popup_id)
-    let close_popup_html = document.getElementById('close_popup')
-    popup_html.classList.remove('hidden')
-    close_popup_html.classList.remove('hidden')
-    val = /*html*/``
+    let popup = Storage.getItem('popup')
+    let popupHtml = document.getElementById(PopupId)
+    let closePopupHtml = document.getElementById('close-popup')
+    popupHtml.classList.remove('hidden')
+    closePopupHtml.classList.remove('hidden')
+    let val = /*html*/``
     switch(popup){
-        case settings_id: val = settings_html; break
-
-        case character_sheet_id:
-            data = JSON.parse(storage.getItem('characters'))
-            val += /*html*/`<table id="character_sheet_table">`
-            for(let t = 0; t < teams.length; t++){
-                val += /*html*/`<tr class="${teams[t]} underline"><th>${teams[t]}</th><th></th></tr>`
+        case SettingsId: {
+            val = SettingsHtml 
+            break
+        }
+        case CharacterSheetId: {
+            let data = JSON.parse(Storage.getItem('characters'))
+            val += /*html*/`<table id="character-sheet-table">`
+            for(let t = 0; t < Teams.length; t++){
+                val += /*html*/`<tr class="${Teams[t]} underline"><th>${Teams[t][0].toUpperCase() + Teams[t].slice(1)}</th><th></th></tr>`
                 for(let i = 0; i < data.length; i++)
-                    if(data[i].Team == teams[t])
-                        val += /*html*/`<tr class="${teams[t]}"><td>${data[i].Name}</td><td> -${data[i].Ability}</td></tr>`
+                    if(data[i].team == Teams[t])
+                        val += /*html*/`<tr class="${Teams[t]}"><td>${data[i].name}</td><td> -${data[i].ability}</td></tr>`
             }
             val += /*html*/`</table>`
             break
-
-        case night_order_id:
-            data = JSON.parse(storage.getItem('characters'))
-            let fno = first_night_order_json.filter(e => data.find(f => f.ID == e) || required_night_order_json.find(f => f == e))
-            let ono = other_night_order_json.filter(e => data.find(f => f.ID == e) || required_night_order_json.find(f => f == e))
-            val += /*html*/`<table id="night_order_table"><tr><th class="left underline">First</th><th class="right underline">Other</th></tr>`
+        }
+        case NightOrderId: {
+            let data = JSON.parse(Storage.getItem('characters'))
+            let fno = data.filter(e => e.firstNight != 0).sort((a, b) => a.firstNight > b.firstNight)
+            let ono = data.filter(e => e.otherNight != 0).sort((a, b) => a.otherNight > b.otherNight)
+            val += /*html*/`<table id="night-order-table"><tr><th class="left underline">First</th><th class="right underline">Other</th></tr>`
             for(let i = 0; i < Math.max(fno.length, ono.length); i++)
-                val += /*html*/`<tr><td class="${(data.find(e => e.ID == fno[i]) ?? {"Team":""}).Team}">${i < fno.length ? fno[i] : ''}</td><td class="${(data.find(e => e.ID == ono[i]) ?? {"Team":""}).Team} right">${i < ono.length ? ono[i] : ''}</tr>`
+                val += /*html*/`<tr><td class="${i < fno.length ? fno[i].team : ''}">${i < fno.length ? fno[i].name : ''}</td><td class="${i < ono.length ? ono[i].team : ''} right">${i < ono.length ? ono[i].name : ''}</tr>`
             val += /*html*/`</table>`
             break
-
-        case role_select_id:
-            user_index = storage.getItem('selected_user')
-            users = JSON.parse(storage.getItem('users'))
-            labels = JSON.parse(storage.getItem('characters')).map(e => e.Name)
-            val = generate_menu(labels, labels.map(e => users[user_index].Role.map(a => a.Name).includes(e)))
+        }
+        case RoleSelectId: {
+            let userIndex = Storage.getItem('selected-user')
+            let users = JSON.parse(Storage.getItem('users'))
+            let labels = JSON.parse(Storage.getItem('characters')).map(e => e.name)
+            val = generate_menu(labels, labels.map(e => users[userIndex].roles.map(a => a.name).includes(e)))
             break
-
-        case day_token_select_id:
-            user_index = storage.getItem('selected_user')
-            day_index = storage.getItem('selected_day')
-            users = JSON.parse(storage.getItem('users'))
-            val = generate_menu(day_tokens, day_tokens.map(e => users[user_index].Days[day_index].includes(e)))
+        }
+        case DayTokenSelectId: {
+            let userIndex = Storage.getItem('selected-user')
+            let dayIndex = Storage.getItem('selected-day')
+            let users = JSON.parse(Storage.getItem('users'))
+            val = generate_menu(DayTokens, DayTokens.map(e => users[userIndex].days[dayIndex].includes(e)))
             break
-        
-        case night_token_select_id:
-            user_index = storage.getItem('selected_user')
-            day_index = storage.getItem('selected_day')
-            users = JSON.parse(storage.getItem('users'))
-            val = generate_menu(night_tokens, night_tokens.map(e => users[user_index].Nights[day_index].includes(e)))
+        }
+        case NightTokenSelectId: {
+            let userIndex = Storage.getItem('selected-user')
+            let dayIndex = Storage.getItem('selected-day')
+            let users = JSON.parse(Storage.getItem('users'))
+            val = generate_menu(NightTokens, NightTokens.map(e => users[userIndex].nights[dayIndex].includes(e)))
             break
-        
-        case known_role_select_id:
-            known =  JSON.parse(storage.getItem('known_roles'))
-            labels = JSON.parse(storage.getItem('characters')).map(e => e.Name)
-            val = generate_menu(labels, labels.map(e => known.map(a => a.Name).includes(e)))
+        }
+        case KnownRoleSelectId: {
+            let known =  JSON.parse(Storage.getItem('known-roles'))
+            let labels = JSON.parse(Storage.getItem('characters')).map(e => e.name)
+            val = generate_menu(labels, labels.map(e => known.map(a => a.name).includes(e)))
             break
-
-        default:
-            popup_html.classList.add('hidden')
-            close_popup_html.classList.add('hidden')
+        }
+        default: {
+            popupHtml.classList.add('hidden')
+            closePopupHtml.classList.add('hidden')
             break
+        }
     }
-    document.getElementById(popup_id).innerHTML = val
+    document.getElementById(PopupId).innerHTML = val
 }
 
 function render_notes(){
     let val = /*html*/`<tr><th>Name</th><th>Alignment</th><th>Role</th>`
-    let days = storage.getItem('days');
+    let days = Storage.getItem('days');
     for(let i = 1; i <= days; i++)
         val += /*html*/`<th>Night ${i}</th><th>Day ${i}</th>`
-    val += /*html*/`<th><button onClick="add_day()">+</button></th></tr>`
-    let users = JSON.parse(storage.getItem('users'))
+    val += /*html*/`<th><button onclick="add_day()">+</button></th></tr>`
+    let users = JSON.parse(Storage.getItem('users'))
     if(users)
         for(let i = 0; i < users.length; i++){
             val += /*html*/`
                 <tr>
-                    <td class="${users[i].Alignment}"><input type="text" id="user_${i}_name" value="${users[i].Name}" onchange="update_name(${i})"></td>
-                    <td class="${users[i].Alignment}"><select id="user_${i}_alignment" onchange="update_alignment(${i})"><option value="good"${users[i].Alignment == 'good' ? ' selected' : ''}>Good</option><option value="evil"${users[i].Alignment == 'evil' ? ' selected' : ''}>Evil</option></select></td>
-                    <td class="${users[i].Alignment}"><button onClick="open_role_select(${i})">+</button></td>`
+                    <td class="${users[i].alignment}"><input type="text" id="user-${i}-name" value="${users[i].name}" onchange="update_name(${i})"></td>
+                    <td class="${users[i].alignment}"><select id="user-${i}-alignment" onchange="update_alignment(${i})"><option value="good"${users[i].alignment == 'good' ? ' selected' : ''}>Good</option><option value="evil"${users[i].alignment == 'evil' ? ' selected' : ''}>Evil</option></select></td>
+                    <td class="${users[i].alignment}"><button onclick="open_role_select(${i})">+</button></td>`
 
             for(let a = 0; a < days; a++){
-                val += /*html*/`<td class="${users[i].Alignment}">`
-                for(let b = 0; b < users[i].Nights[a].length; b++)
-                    if(users[i].Nights[a][b] == 'Custom Note')
+                val += /*html*/`<td class="${users[i].alignment}">`
+                for(let b = 0; b < users[i].nights[a].length; b++)
+                    if(users[i].nights[a][b] == 'Custom Note')
                         val += /*html*/`<input type="text">`
                     else
-                        val += /*html*/`<a class="token">${users[i].Nights[a][b]}</a>`
-                val += /*html*/`<button onClick="add_night_note(${i}, ${a})">+</button></td><td class="${users[i].Alignment}">`
-                for(let b = 0; b < users[i].Days[a].length; b++)
-                    if(users[i].Days[a][b] == 'Custom Note')
+                        val += /*html*/`<a class="token">${users[i].nights[a][b]}</a>`
+                val += /*html*/`<button onclick="add_night_note(${i}, ${a})">+</button></td><td class="${users[i].alignment}">`
+                for(let b = 0; b < users[i].days[a].length; b++)
+                    if(users[i].days[a][b] == 'Custom Note')
                         val += /*html*/`<input type="text">`
                     else
-                        val += /*html*/`<a class="token">${users[i].Days[a][b]}</a>`
-                val += /*html*/`<button onClick="add_day_note(${i}, ${a})">+</button></td>`
+                        val += /*html*/`<a class="token">${users[i].days[a][b]}</a>`
+                val += /*html*/`<button onclick="add_day_note(${i}, ${a})">+</button></td>`
             }
-            val += /*html*/`<td class="${users[i].Alignment}"></td></tr>`
-            for(let a = 0; a < users[i].Role.length; a++){
-                val += /*html*/`<tr><td></td><td></td><td>${users[i].Role[a].Name}</td>`
+            val += /*html*/`<td class="${users[i].alignment}"></td></tr>`
+            for(let a = 0; a < users[i].roles.length; a++){
+                val += /*html*/`<tr><td></td><td></td><td>${users[i].roles[a].name}</td>`
                 for(let b = 0; b < days; b++){
                     val += /*html*/`
-                        <td><input type="text" id="user_${i}_role_${a}_night_${b}_note" onchange="save_night_note(${i}, ${a}, ${b})" value="${users[i].Role[a].Nights[b]}"></td>
-                        <td><input type="text" id="user_${i}_role_${a}_day_${b}_note" onchange="save_day_note(${i}, ${a}, ${b})" value="${users[i].Role[a].Days[b]}"></td>`
+                        <td><input type="text" id="user-${i}-role-${a}-night-${b}-note" onchange="save_night_note(${i}, ${a}, ${b})" value="${users[i].roles[a].nights[b]}"></td>
+                        <td><input type="text" id="user-${i}-role-${a}-day-${b}-note" onchange="save_day_note(${i}, ${a}, ${b})" value="${users[i].roles[a].days[b]}"></td>`
                 }
                 val += /*html*/`</tr>`
             }
+            val += /*html*/`<tr><td class="${users[i].alignment}"></td><td class="${users[i].alignment}"></td><td class="${users[i].alignment}"></td>`
+            for(let a = 0; a < days; a++)
+                val += /*html*/`<td class="${users[i].alignment}"></td><td class="${users[i].alignment}"></td>`
+            val += /*html*/`<td class="${users[i].alignment}"></td></tr>`
         }
     val += /*html*/`
         <tr><td></td></tr>
         <tr><td></td></tr>
-        <tr><td>Known Roles:</td><td></td><td><button onClick="set_popup('${known_role_select_id}')">+</button></td></tr>`
-    let known = JSON.parse(storage.getItem('known_roles'))
+        <tr><td>Known Roles:</td><td></td><td><button onclick="set_popup('${KnownRoleSelectId}')">+</button></td></tr>`
+    let known = JSON.parse(Storage.getItem('known-roles'))
     if(known)
         for(let i = 0; i < known.length; i++){
-            val += /*html*/`<tr><td></td><td></td><td>${known[i].Name}</td>`
+            val += /*html*/`<tr><td></td><td></td><td>${known[i].name}</td>`
             for(let a = 0; a < days; a++){
                 val += /*html*/`
-                    <td><input type="text" id="known_${i}_night_${a}_note" onchange="save_known_night_note(${i}, ${a})" value="${known[i].Nights[a]}"></td>
-                    <td><input type="text" id="known_${i}_day_${a}_note" onchange="save_known_day_note(${i}, ${a})" value="${known[i].Days[a]}"></td>`
+                    <td><input type="text" id="known-${i}-night-${a}-note" onchange="save_known_night_note(${i}, ${a})" value="${known[i].nights[a]}"></td>
+                    <td><input type="text" id="known-${i}-day-${a}-note" onchange="save_known_day_note(${i}, ${a})" value="${known[i].days[a]}"></td>`
             }
             val += /*html*/`</tr>`
         }
-    document.getElementById(notes_id).innerHTML = val
+    document.getElementById(NotesId).innerHTML = val
 }
 
 function submit_settings(){
-    let script_id = document.forms[settings_id]["script"].value;
-    switch (script_id){
-        case 'tb' : finish_settings(tb_json); break
-        case 'snv': finish_settings(snv_json); break
-        case 'bmr': finish_settings(bmr_json); break
-        case 'custom':
-            try {
-                var file = document.getElementById("custom_script").files[0];
-                var fileReader = new FileReader();
-                fileReader.onload = function(fileLoadedEvent){ finish_settings(JSON.parse(fileLoadedEvent.target.result)) }
-                fileReader.readAsText(file, "UTF-8");
-            } catch (error) {
-                alert("Please upload a valid custom script")
-                return
+    let scriptId = document.forms[SettingsId]["script"].value;
+    if(scriptId == 'custom'){
+        try {
+            var file = document.getElementById("custom-script").files[0];
+            var fileReader = new FileReader();
+            fileReader.onload = function(fileLoadedEvent){ 
+                let script = JSON.parse(fileLoadedEvent.target.result)
+                script.shift()
+                let characters = BOTC_JSON.roles.filter(e => script.includes(e.name))
+                if(characters.length != script.length)
+                    throw this.error;
+                finish_settings(characters)
             }
-            break
+            fileReader.readAsText(file, "UTF-8");
+        } catch (error) {
+            alert("Please upload a valid custom script")
+            return
+        }
+    }
+    else{
+        finish_settings(BOTC_JSON.roles.filter(e => e.edition == scriptId && e.team != 'traveller'))
     }
     return false
 }
 
-function finish_settings(script){
-    script.shift()
-    let list = []
-    for(let i = 0; i < script.length; i++)
-        list.push(characters_json.find(e => e.ID == script[i]))
-    storage.setItem('characters', JSON.stringify(list))
+function finish_settings(characters){
+    Storage.setItem('characters', JSON.stringify(characters))
     let users = []
-    for(let i = 0; i < document.forms[settings_id]["count"].value; i++){
+    for(let i = 0; i < document.forms[SettingsId]["count"].value; i++){
         users.push({})
-        users[i].Name = `Player ${i + 1}`
-        users[i].Alignment = 'good'
-        users[i].Role = []
-        users[i].Nights = []
-        users[i].Days = []
+        users[i].name = `Player ${i + 1}`
+        users[i].alignment = 'good'
+        users[i].roles = []
+        users[i].nights = []
+        users[i].days = []
     }
-    storage.setItem('users', JSON.stringify(users))
-    storage.setItem('days', 0)
-    storage.setItem('known_roles', JSON.stringify([]))
+    Storage.setItem('users', JSON.stringify(users))
+    Storage.setItem('days', 0)
+    Storage.setItem('known-roles', JSON.stringify([]))
     add_day()
-
     close_windows()
 }
 
 function set_popup(val){
-    let list
-    switch(storage.getItem('popup')){
-        case role_select_id:
-            list = get_menu_result()
-            user_index = storage.getItem('selected_user')
-            users = JSON.parse(storage.getItem('users'))
-            old_list = users[user_index].Role
-            day_count = storage.getItem('days')
-            users[user_index].Role = []
+    switch(Storage.getItem('popup')){
+        case RoleSelectId: {
+            let list = get_menu_result()
+            let userIndex = Storage.getItem('selected-user')
+            let users = JSON.parse(Storage.getItem('users'))
+            let oldList = users[userIndex].roles
+            let dayCount = Storage.getItem('days')
+            users[userIndex].roles = []
             for(let i = 0; i < list.length; i++)
-                if(list[i].Selected)
-                    if(old_list.map(e => e.Name).includes(list[i].Name))
-                        users[user_index].Role.push(old_list.find(e => e.Name == list[i].Name))
+                if(list[i].selected)
+                    if(oldList.map(e => e.name).includes(list[i].name))
+                        users[userIndex].roles.push(oldList.find(e => e.name == list[i].name))
                     else{
-                        users[user_index].Role.push({})
-                        let last = users[user_index].Role.length - 1
-                        users[user_index].Role[last].Name = list[i].Name
-                        users[user_index].Role[last].Nights = []
-                        users[user_index].Role[last].Days = []
-                        for(let a = 0; a < day_count; a++){
-                            users[user_index].Role[last].Nights.push([])
-                            users[user_index].Role[last].Days.push([])
+                        users[userIndex].roles.push({})
+                        let last = users[userIndex].roles.length - 1
+                        users[userIndex].roles[last].name = list[i].name
+                        users[userIndex].roles[last].nights = []
+                        users[userIndex].roles[last].days = []
+                        for(let a = 0; a < dayCount; a++){
+                            users[userIndex].roles[last].nights.push('')
+                            users[userIndex].roles[last].days.push('')
                         }
                     }
-            storage.setItem('users', JSON.stringify(users))
+            Storage.setItem('users', JSON.stringify(users))
             break
-
-        case day_token_select_id:
-            list = get_menu_result()
-            user_index = storage.getItem('selected_user')
-            day_index = storage.getItem('selected_day')
-            users = JSON.parse(storage.getItem('users'))
-            users[user_index].Days[day_index] = list.filter(e => e.Selected).map(e => e.Name)
-            storage.setItem('users', JSON.stringify(users))
+        }
+        case DayTokenSelectId: {
+            let list = get_menu_result()
+            let userIndex = Storage.getItem('selected-user')
+            let dayIndex = Storage.getItem('selected-day')
+            let users = JSON.parse(Storage.getItem('users'))
+            users[userIndex].days[dayIndex] = list.filter(e => e.selected).map(e => e.name)
+            Storage.setItem('users', JSON.stringify(users))
             break;
-        
-        case night_token_select_id:
-            list = get_menu_result()
-            user_index = storage.getItem('selected_user')
-            day_index = storage.getItem('selected_day')
-            users = JSON.parse(storage.getItem('users'))
-            users[user_index].Nights[day_index] = list.filter(e => e.Selected).map(e => e.Name)
-            storage.setItem('users', JSON.stringify(users))
+        }
+        case NightTokenSelectId: {
+            let list = get_menu_result()
+            let userIndex = Storage.getItem('selected-user')
+            let dayIndex = Storage.getItem('selected-day')
+            let users = JSON.parse(Storage.getItem('users'))
+            users[userIndex].nights[dayIndex] = list.filter(e => e.selected).map(e => e.name)
+            Storage.setItem('users', JSON.stringify(users))
             break;
-
-        case known_role_select_id:
-            list = get_menu_result()
-            known = []
-            old_list = JSON.parse(storage.getItem('known_roles'))
-            day_count = storage.getItem('days')
+        }
+        case KnownRoleSelectId: {
+            let list = get_menu_result()
+            let known = []
+            let oldList = JSON.parse(Storage.getItem('known-roles'))
+            let dayCount = Storage.getItem('days')
             for(let i = 0; i < list.length; i++)
-                if(list[i].Selected)
-                    if(old_list.map(e => e.Name).includes(list[i].Name))
-                        known.push(old_list.find(e => e.Name == list[i].Name))
+                if(list[i].selected)
+                    if(oldList.map(e => e.name).includes(list[i].name))
+                        known.push(oldList.find(e => e.name == list[i].name))
                     else{
                         known.push({})
                         let last = known.length - 1
-                        known[last].Name = list[i].Name
-                        known[last].Nights = []
-                        known[last].Days = []
-                        for(let a = 0; a < day_count; a++){
-                            known[last].Nights.push([])
-                            known[last].Days.push([])
+                        known[last].name = list[i].name
+                        known[last].nights = []
+                        known[last].days = []
+                        for(let a = 0; a < dayCount; a++){
+                            known[last].nights.push('')
+                            known[last].days.push('')
                         }
                     }
-            storage.setItem('known_roles', JSON.stringify(known))
+            Storage.setItem('known-roles', JSON.stringify(known))
             break
+        }
     }
-    storage.setItem('popup', val)
+    Storage.setItem('popup', val)
     render_page()
 }
 
-function close_windows() { if(storage.getItem('characters') != null) set_popup('') }
-function open_settings() { set_popup(settings_id) }
-function open_character_sheet(){ set_popup(character_sheet_id) }
-function open_night_order(){ set_popup(night_order_id) }
+function close_windows() { if(Storage.getItem('characters') != null) set_popup('') }
+function open_settings() { set_popup(SettingsId) }
+function open_character_sheet(){ set_popup(CharacterSheetId) }
+function open_night_order(){ set_popup(NightOrderId) }
 
-function open_role_select(user_index){ 
-    storage.setItem('selected_user', user_index)
-    set_popup(role_select_id) 
+function open_role_select(userIndex){ 
+    Storage.setItem('selected-user', userIndex)
+    set_popup(RoleSelectId) 
 }
 
 function init(){
-    if (!storage.getItem('users')) open_settings()
+    if (!Storage.getItem('users')) open_settings()
     else{
         render_page()
-        document.getElementById('other_notes_text').value = storage.getItem('other_notes') ?? ''
+        document.getElementById('other-notes-text').value = Storage.getItem('other-notes') ?? ''
     }
 }
 
-function update_name(user_index){
-    let users = JSON.parse(storage.getItem('users'))
-    users[user_index].Name = document.getElementById(`user_${user_index}_name`).value
-    storage.setItem('users', JSON.stringify(users))
+function update_name(userIndex){
+    let users = JSON.parse(Storage.getItem('users'))
+    users[userIndex].name = document.getElementById(`user-${userIndex}-name`).value
+    Storage.setItem('users', JSON.stringify(users))
 }
 
-function update_alignment(user_index){
-    let users = JSON.parse(storage.getItem('users'))
-    users[user_index].Alignment = document.getElementById(`user_${user_index}_alignment`).value
-    storage.setItem('users', JSON.stringify(users))
-    render_page()
+function update_alignment(userIndex){
+    let users = JSON.parse(Storage.getItem('users'))
+    users[userIndex].alignment = document.getElementById(`user-${userIndex}-alignment`).value
+    Storage.setItem('users', JSON.stringify(users))
+    render_notes()
 }
 
 function add_day(){
-    storage.setItem('days', Number(storage.getItem('days')) + 1)
-    let users = JSON.parse(storage.getItem('users'))
+    Storage.setItem('days', Number(Storage.getItem('days')) + 1)
+    let users = JSON.parse(Storage.getItem('users'))
     for(let i = 0; i < users.length; i++){
-        users[i].Days.push([]);
-        users[i].Nights.push([]);
-        for(let a = 0; a < users[i].Role.length; a++){
-            users[i].Role[a].Nights.push([])
-            users[i].Role[a].Days.push([])
+        users[i].days.push([]);
+        users[i].nights.push([]);
+        for(let a = 0; a < users[i].roles.length; a++){
+            users[i].roles[a].nights.push('')
+            users[i].roles[a].days.push('')
         }
     }
-    storage.setItem('users', JSON.stringify(users))
-    let known = JSON.parse(storage.getItem('known_roles'))
+    Storage.setItem('users', JSON.stringify(users))
+    let known = JSON.parse(Storage.getItem('known-roles'))
     for(let i = 0; i < known.length; i++){
-        known[i].Days.push([]);
-        known[i].Nights.push([]);
+        known[i].days.push('');
+        known[i].nights.push('');
     }
-    storage.setItem('known_roles', JSON.stringify(known))
+    Storage.setItem('known-roles', JSON.stringify(known))
     render_page()
 }
 
-function add_day_note(user_index, day_number){
-    storage.setItem('selected_user', user_index)
-    storage.setItem('selected_day', day_number)
-    set_popup(day_token_select_id)
+function add_day_note(userIndex, dayNumber){
+    Storage.setItem('selected-user', userIndex)
+    Storage.setItem('selected-day', dayNumber)
+    set_popup(DayTokenSelectId)
 }
 
-function add_night_note(user_index, night_number){
-    storage.setItem('selected_user', user_index)
-    storage.setItem('selected_day', night_number)
-    set_popup(night_token_select_id)
+function add_night_note(userIndex, nightNumber){
+    Storage.setItem('selected-user', userIndex)
+    Storage.setItem('selected-day', nightNumber)
+    set_popup(NightTokenSelectId)
 }
 
-function save_day_note(user_index, role_index, day_number){
-    let users = JSON.parse(storage.getItem('users'))
-    users[user_index].Role[role_index].Days[day_number] = document.getElementById(`user_${user_index}_role_${role_index}_day_${day_number}_note`).value
-    storage.setItem('users', JSON.stringify(users))
+function save_day_note(userIndex, roleIndex, dayNumber){
+    let users = JSON.parse(Storage.getItem('users'))
+    users[userIndex].roles[roleIndex].days[dayNumber] = document.getElementById(`user-${userIndex}-role-${roleIndex}-day-${dayNumber}-note`).value
+    Storage.setItem('users', JSON.stringify(users))
 }
 
-function save_night_note(user_index, role_index, night_number){
-    let users = JSON.parse(storage.getItem('users'))
-    users[user_index].Role[role_index].Nights[night_number] = document.getElementById(`user_${user_index}_role_${role_index}_night_${night_number}_note`).value
-    storage.setItem('users', JSON.stringify(users))
+function save_night_note(userIndex, roleIndex, nightNumber){
+    let users = JSON.parse(Storage.getItem('users'))
+    users[userIndex].roles[roleIndex].nights[nightNumber] = document.getElementById(`user-${userIndex}-role-${roleIndex}-night-${nightNumber}-note`).value
+    Storage.setItem('users', JSON.stringify(users))
 }
 
-function save_other_note(){ storage.setItem('other_notes', document.getElementById('other_notes_text').value) }
+function save_other_note(){ Storage.setItem('other-notes', document.getElementById('other-notes-text').value) }
 
-function save_known_day_note(role_index, day_number){
-    let known = JSON.parse(storage.getItem('known_roles'))
-    known[role_index].Days[day_number] = document.getElementById(`known_${role_index}_day_${day_number}_note`).value
-    storage.setItem('known_roles', JSON.stringify(known))
+function save_known_day_note(roleIndex, dayNumber){
+    let known = JSON.parse(Storage.getItem('known-roles'))
+    known[roleIndex].days[dayNumber] = document.getElementById(`known-${roleIndex}-day-${dayNumber}-note`).value
+    Storage.setItem('known-roles', JSON.stringify(known))
 }
 
-function save_known_night_note(role_index, night_number){
-    let known = JSON.parse(storage.getItem('known_roles'))
-    known[role_index].Nights[night_number] = document.getElementById(`known_${role_index}_night_${night_number}_note`).value
-    storage.setItem('known_roles', JSON.stringify(known))
+function save_known_night_note(roleIndex, nightNumber){
+    let known = JSON.parse(Storage.getItem('known-roles'))
+    known[roleIndex].nights[nightNumber] = document.getElementById(`known-${roleIndex}-night-${nightNumber}-note`).value
+    Storage.setItem('known-roles', JSON.stringify(known))
 }
 
 /**
@@ -355,4 +362,6 @@ function save_known_night_note(role_index, night_number){
  * Replace role notes with actual info (will have to handle new instances of abilities)
  * Add fabled slot (could be added to known in play)
  * Add role changing (think barber/pithag)
+ * 
+ * !!! doesn't save custom notes
  */

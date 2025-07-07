@@ -16,7 +16,7 @@ html {
     color: var(--text);
 }
 
-#close_popup{
+#close-popup{
     position: fixed;
     width: 100%;
     height: 100%;
@@ -28,7 +28,7 @@ html {
     background:rgba(0, 0, 0, 0.5);
 }
 
-#close_popup.hidden{
+#close-popup.hidden{
     width: 0;
     height: 0;
 }
@@ -50,7 +50,7 @@ html {
     border-width: 0px;
 }
 
-#notes_table{
+#notes-table{
     background-color: var(--paper);
     width: fit-content;
     border-radius: 10px;
@@ -59,7 +59,7 @@ html {
     margin: auto;
 }
 
-#notes_table input[type="text"]{
+#notes-table input[type="text"]{
     background-color: var(--paper-highlight);
     width: 100px;
     text-align: center;
@@ -74,13 +74,13 @@ button, select {
     border-radius: 5px;
 }
 
-.Townsfolk, .Outsiders { color: var(--good); }
-.Minions, .Demons { color: var(--evil); }
+.townsfolk, .outsider { color: var(--good); }
+.minion, .demon { color: var(--evil); }
 
 .underline { text-decoration: underline; }
 
 .left { text-align: left; }
-.right { text-align: right;}
+.right { text-align: right; }
 
 table {
   border-collapse: separate;
@@ -89,13 +89,11 @@ table {
 
 td, th { padding: 2px 5px; }
 
-td.good { border-bottom: 3px solid rgb(198, 198, 255); }
+td.good { border-top: 3px solid rgb(198, 198, 255); }
 
-td.evil { border-bottom: 3px solid rgb(255, 177, 177); }
+td.evil { border-top: 3px solid rgb(255, 177, 177); }
 
-#night_order_table td, #night_order_table th {
-    width: 150px;
-}
+#night-order-table td, #night-order-table th { width: 150px; }
 
 .token {
     border: 2px solid var(--paper-highlight);
@@ -106,14 +104,14 @@ td.evil { border-bottom: 3px solid rgb(255, 177, 177); }
     color: white;
 }
 
-#nav_buttons, #other_notes {
+#nav-buttons, #other-notes {
     margin: auto;
     margin-top: 20px;
     margin-bottom: 20px;
     width: fit-content;
 }
 
-#nav_buttons button {
+#nav-buttons button {
     width: 150px;
     height: 30px
 }
@@ -123,6 +121,4 @@ input, label {
     margin-bottom: 5px;
 }
 
-form {
-    margin: 0px
-}
+form { margin: 0px; }
