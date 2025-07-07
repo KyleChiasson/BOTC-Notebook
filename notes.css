@@ -36,7 +36,7 @@ html {
 #popup{
     background-color: var(--paper);
     padding: 30px;
-    position: absolute; 
+    position: fixed; 
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -84,10 +84,14 @@ button, select {
 
 table {
   border-collapse: separate;
-  border-spacing: 10px 0;
+  border-spacing: 0px 5px;
 }
 
-td, th { padding: 5px 0; }
+td, th { padding: 2px 5px; }
+
+.good { background-color: rgb(198, 198, 255); }
+
+.evil { background-color: rgb(255, 177, 177); }
 
 #night_order_table td, #night_order_table th {
     width: 150px;
