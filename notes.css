@@ -16,6 +16,8 @@ html {
     color: var(--text);
 }
 
+.hidden { display: none; }
+
 #close-popup{
     position: fixed;
     width: 100%;
@@ -28,11 +30,6 @@ html {
     background:rgba(0, 0, 0, 0.5);
 }
 
-#close-popup.hidden{
-    width: 0;
-    height: 0;
-}
-
 #popup{
     background-color: var(--paper);
     padding: 30px;
@@ -43,11 +40,6 @@ html {
     border-radius: 30px;
     border: 3px solid var(--paper-highlight);
     z-index: 10;
-}
-
-#popup.hidden{
-    padding: 0px;
-    border-width: 0px;
 }
 
 #notes-table{
