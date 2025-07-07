@@ -94,19 +94,19 @@ function render_notes(){
     if(users)
         for(let i = 0; i < users.length; i++){
             val += /*html*/`
-                <tr class="${users[i].Alignment}">
-                    <td><input type="text" id="user_${i}_name" value="${users[i].Name}" onchange="update_name(${i})"></td>
-                    <td><select id="user_${i}_alignment" onchange="update_alignment(${i})"><option value="good"${users[i].Alignment == 'good' ? ' selected' : ''}>Good</option><option value="evil"${users[i].Alignment == 'evil' ? ' selected' : ''}>Evil</option></select></td>
-                    <td><button onClick="open_role_select(${i})">+</button></td>`
+                <tr>
+                    <td class="${users[i].Alignment}"><input type="text" id="user_${i}_name" value="${users[i].Name}" onchange="update_name(${i})"></td>
+                    <td class="${users[i].Alignment}"><select id="user_${i}_alignment" onchange="update_alignment(${i})"><option value="good"${users[i].Alignment == 'good' ? ' selected' : ''}>Good</option><option value="evil"${users[i].Alignment == 'evil' ? ' selected' : ''}>Evil</option></select></td>
+                    <td class="${users[i].Alignment}"><button onClick="open_role_select(${i})">+</button></td>`
 
             for(let a = 0; a < days; a++){
-                val += /*html*/`<td>`
+                val += /*html*/`<td class="${users[i].Alignment}">`
                 for(let b = 0; b < users[i].Nights[a].length; b++)
                     if(users[i].Nights[a][b] == 'Custom Note')
                         val += /*html*/`<input type="text">`
                     else
                         val += /*html*/`<a class="token">${users[i].Nights[a][b]}</a>`
-                val += /*html*/`<button onClick="add_night_note(${i}, ${a})">+</button></td><td>`
+                val += /*html*/`<button onClick="add_night_note(${i}, ${a})">+</button></td><td class="${users[i].Alignment}">`
                 for(let b = 0; b < users[i].Days[a].length; b++)
                     if(users[i].Days[a][b] == 'Custom Note')
                         val += /*html*/`<input type="text">`
@@ -114,7 +114,7 @@ function render_notes(){
                         val += /*html*/`<a class="token">${users[i].Days[a][b]}</a>`
                 val += /*html*/`<button onClick="add_day_note(${i}, ${a})">+</button></td>`
             }
-            val += /*html*/`<td></td></tr>`
+            val += /*html*/`<td class="${users[i].Alignment}"></td></tr>`
             for(let a = 0; a < users[i].Role.length; a++){
                 val += /*html*/`<tr><td></td><td></td><td>${users[i].Role[a].Name}</td>`
                 for(let b = 0; b < days; b++){

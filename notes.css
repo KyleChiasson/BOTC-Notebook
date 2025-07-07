@@ -89,9 +89,9 @@ table {
 
 td, th { padding: 2px 5px; }
 
-.good { background-color: rgb(198, 198, 255); }
+td.good { border-bottom: 3px solid rgb(198, 198, 255); }
 
-.evil { background-color: rgb(255, 177, 177); }
+td.evil { border-bottom: 3px solid rgb(255, 177, 177); }
 
 #night_order_table td, #night_order_table th {
     width: 150px;
