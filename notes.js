@@ -59,10 +59,10 @@ function render_role_select(popupHtml, userIndex, users, labels)
 { popupHtml.innerHTML = generate_menu(labels, labels.map(e => users[userIndex].roles.map(a => a.name).includes(e))) }
 
 function render_day_token_select(popupHtml, users, userIndex, dayIndex)
-{ popupHtml.innerHTML = generate_menu(DayTokens, DayTokens.map(e => users[userIndex].days[dayIndex].includes(e))) }
+{ popupHtml.innerHTML = generate_menu(DayTokens, DayTokens.map(e => users[userIndex].days[dayIndex].notes.includes(e))) }
 
 function render_night_token_select(popupHtml, users, userIndex, dayIndex)
-{ popupHtml.innerHTML = generate_menu(NightTokens, NightTokens.map(e => users[userIndex].nights[dayIndex].includes(e))) }
+{ popupHtml.innerHTML = generate_menu(NightTokens, NightTokens.map(e => users[userIndex].nights[dayIndex].notes.includes(e))) }
 
 function render_known_role_select(popupHtml, known, labels)
 { popupHtml.innerHTML = generate_menu(labels, labels.map(e => known.map(a => a.name).includes(e))) }
@@ -84,17 +84,18 @@ function render_notes(){
 
             for(let a = 0; a < days; a++){
                 val += /*html*/`<td class="${users[i].alignment}">`
-                for(let b = 0; b < users[i].nights[a].length; b++)
-                    if(users[i].nights[a][b] == 'Custom Note')
-                        val += /*html*/`<input type="text">`
+                for(let b = 0; b < users[i].nights[a].notes.length; b++)
+                    if(users[i].nights[a].notes[b] == 'Custom Note')
+                        val += /*html*/`<input type="text" id="user-${i}-night-${a}-custom-note" value="${users[i].nights[a].custom}" onchange="save_custom_night(${i}, ${a})">`
                     else
-                        val += /*html*/`<a class="token">${users[i].nights[a][b]}</a>`
+                        val += /*html*/`<a class="token">${users[i].nights[a].notes[b]}</a>`
                 val += /*html*/`<button onclick="add_night_note(${i}, ${a})">+</button></td><td class="${users[i].alignment}">`
-                for(let b = 0; b < users[i].days[a].length; b++)
-                    if(users[i].days[a][b] == 'Custom Note')
-                        val += /*html*/`<input type="text">`
+
+                for(let b = 0; b < users[i].days[a].notes.length; b++)
+                    if(users[i].days[a].notes[b] == 'Custom Note')
+                        val += /*html*/`<input type="text" id="user-${i}-day-${a}-custom-note" value="${users[i].days[a].custom}" onchange="save_custom_day(${i}, ${a})">`
                     else
-                        val += /*html*/`<a class="token">${users[i].days[a][b]}</a>`
+                        val += /*html*/`<a class="token">${users[i].days[a].notes[b]}</a>`
                 val += /*html*/`<button onclick="add_day_note(${i}, ${a})">+</button></td>`
             }
             val += /*html*/`<td class="${users[i].alignment}"></td></tr>`
@@ -226,7 +227,6 @@ function generate_night_order(characters){
 /**
  * Mutator Functions
  */
-
 function set_popup(val){
     switch(Storage.getItem('popup')){
         case RoleSelectId: {
@@ -256,7 +256,7 @@ function set_popup(val){
             let userIndex = Storage.getItem('selected-user')
             let dayIndex = Storage.getItem('selected-day')
             let users = JSON.parse(Storage.getItem('users'))
-            users[userIndex].days[dayIndex] = list.filter(e => e.selected).map(e => e.name)
+            users[userIndex].days[dayIndex].notes = list.filter(e => e.selected).map(e => e.name)
             Storage.setItem('users', JSON.stringify(users))
             break
         }
@@ -265,7 +265,7 @@ function set_popup(val){
             let userIndex = Storage.getItem('selected-user')
             let dayIndex = Storage.getItem('selected-day')
             let users = JSON.parse(Storage.getItem('users'))
-            users[userIndex].nights[dayIndex] = list.filter(e => e.selected).map(e => e.name)
+            users[userIndex].nights[dayIndex].notes = list.filter(e => e.selected).map(e => e.name)
             Storage.setItem('users', JSON.stringify(users))
             break
         }
@@ -321,8 +321,8 @@ function add_day(){
     Storage.setItem('days', Number(Storage.getItem('days')) + 1)
     let users = JSON.parse(Storage.getItem('users'))
     for(let i = 0; i < users.length; i++){
-        users[i].days.push([]);
-        users[i].nights.push([]);
+        users[i].days.push({'notes': [], 'custom': ''});
+        users[i].nights.push({'notes': [], 'custom': ''});
         for(let a = 0; a < users[i].roles.length; a++){
             users[i].roles[a].nights.push('')
             users[i].roles[a].days.push('')
@@ -377,6 +377,18 @@ function save_known_night_note(roleIndex, dayNumber){
     Storage.setItem('known-roles', JSON.stringify(known))
 }
 
+function save_custom_day(userIndex, dayNumber){
+    let users = JSON.parse(Storage.getItem('users'))
+    users[userIndex].days[dayNumber].custom = document.getElementById(`user-${userIndex}-day-${dayNumber}-custom-note`).value
+    Storage.setItem('users', JSON.stringify(users))
+}
+
+function save_custom_night(userIndex, dayNumber){
+    let users = JSON.parse(Storage.getItem('users'))
+    users[userIndex].nights[dayNumber].custom = document.getElementById(`user-${userIndex}-night-${dayNumber}-custom-note`).value
+    Storage.setItem('users', JSON.stringify(users))
+}
+
 /**
  * Todo:
  * Replace role notes with actual info (will have to handle new instances of abilities)
@@ -385,8 +397,6 @@ function save_known_night_note(roleIndex, dayNumber){
  * Make scalable for other devices
  * Add grim view
  * Add images?
- * 
- * !!! doesn't save custom notes
  */
 
 /**
