@@ -397,6 +397,8 @@ function save_custom_night(userIndex, dayNumber){
  * Make scalable for other devices
  * Add grim view
  * Add images?
+ * Add Jinxes
+ * Add Role Amounts
  */
 
 /**
@@ -4019,6 +4021,602 @@ const BOTC_JSON = {
         {
             "host": "us2",
             "name": "US West"
+        }
+    ]
+}
+
+/**
+ * Additions for the notebook
+ */
+const ADDITIONS_JSON = {
+    "roles": [
+        {
+            "id": "washerwoman",
+            "firstNight": ["player", "player", "role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "librarian",
+            "firstNight": ["player", "player", "role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "investigator",
+            "firstNight": ["player", "player", "role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "chef",
+            "firstNight": ["number"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "empath",
+            "firstNight": ["number"],
+            "otherNight": ["number"],
+            "day": []
+        },
+        {
+            "id": "fortuneteller",
+            "firstNight": ["player", "player", "bool"],
+            "otherNight": ["player", "player", "bool"],
+            "day": []
+        },
+        {
+            "id": "undertaker",
+            "firstNight": [],
+            "otherNight": ["role"],
+            "day": []
+        },
+        {
+            "id": "monk",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "ravenkeeper",
+            "firstNight": [],
+            "otherNight": ["player", "role"],
+            "day": []
+        },
+        {
+            "id": "virgin",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["player"]
+        },
+        {
+            "id": "slayer",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["player"]
+        },
+        {
+            "id": "butler",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "drunk",
+            "firstNight": ["role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "poisoner",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "spy",
+            "firstNight": ["grim"],
+            "otherNight": ["grim"],
+            "day": []
+        },
+        {
+            "id": "imp",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "grandmother",
+            "firstNight": ["player", "role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "sailor",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "chambermaid",
+            "firstNight": ["player", "player"],
+            "otherNight": ["player", "player"],
+            "day": []
+        },
+        {
+            "id": "exorcist",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "innkeeper",
+            "firstNight": [],
+            "otherNight": ["player", "player"],
+            "day": []
+        },
+        {
+            "id": "gambler",
+            "firstNight": [],
+            "otherNight": ["player", "role"],
+            "day": []
+        },
+        {
+            "id": "gossip",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["text"]
+        },
+        {
+            "id": "courtier",
+            "firstNight": ["role"],
+            "otherNight": ["role"],
+            "day": []
+        },
+        {
+            "id": "professor",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "moonchild",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["player"]
+        },
+        {
+            "id": "lunatic",
+            "firstNight": ["role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "godfather",
+            "firstNight": ["roles"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "devilsadvocate",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "assassin",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "zombuul",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "pukka",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "shabaloth",
+            "firstNight": [],
+            "otherNight": ["player", "player"],
+            "day": []
+        },
+        {
+            "id": "po",
+            "firstNight": [],
+            "otherNight": ["player", "player", "player"],
+            "day": []
+        },
+        {
+            "id": "clockmaker",
+            "firstNight": ["number"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "dreamer",
+            "firstNight": ["player", "role", "role"],
+            "otherNight": ["player", "role", "role"],
+            "day": []
+        },
+        {
+            "id": "snakecharmer",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "mathematician",
+            "firstNight": ["number"],
+            "otherNight": ["number"],
+            "day": []
+        },
+        {
+            "id": "flowergirl",
+            "firstNight": [],
+            "otherNight": ["bool"],
+            "day": []
+        },
+        {
+            "id": "towncrier",
+            "firstNight": [],
+            "otherNight": ["bool"],
+            "day": []
+        },
+        {
+            "id": "oracle",
+            "firstNight": [],
+            "otherNight": ["number"],
+            "day": []
+        },
+        {
+            "id": "savant",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["text", "text"]
+        },
+        {
+            "id": "seamstress",
+            "firstNight": ["player", "player", "bool"],
+            "otherNight": ["player", "player", "bool"],
+            "day": []
+        },
+        {
+            "id": "philosopher",
+            "firstNight": ["role"],
+            "otherNight": ["role"],
+            "day": []
+        },
+        {
+            "id": "artist",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["text", "bool"]
+        },
+        {
+            "id": "juggler",
+            "firstNight": [],
+            "otherNight": ["number"],
+            "day": ["player", "role", "player", "role", "player", "role", "player", "role", "player", "role"]
+        },
+        {
+            "id": "sage",
+            "firstNight": [],
+            "otherNight": ["player", "player"],
+            "day": []
+        },
+        {
+            "id": "klutz",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["player"]
+        },
+        {
+            "id": "eviltwin",
+            "firstNight": ["player", "role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "witch",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "cerenovus",
+            "firstNight": ["player", "role"],
+            "otherNight": ["player", "role"],
+            "day": []
+        },
+        {
+            "id": "pithag",
+            "firstNight": [],
+            "otherNight": ["player", "role"],
+            "day": []
+        },
+        {
+            "id": "fanggu",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "vigormortis",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "nodashii",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "vortox",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "noble",
+            "firstNight": ["player", "player", "player"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "bountyhunter",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "pixie",
+            "firstNight": ["role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "general",
+            "firstNight": ["alignment"],
+            "otherNight": ["alignment"],
+            "day": []
+        },
+        {
+            "id": "preacher",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "king",
+            "firstNight": ["role"],
+            "otherNight": ["role"],
+            "day": []
+        },
+        {
+            "id": "balloonist",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "cultleader",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["players"]
+        },
+        {
+            "id": "lycanthrope",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "amnesiac",
+            "firstNight": ["text"],
+            "otherNight": ["text"],
+            "day": ["text"]
+        },
+        {
+            "id": "nightwatchman",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "engineer",
+            "firstNight": ["roles"],
+            "otherNight": ["roles"],
+            "day": []
+        },
+        {
+            "id": "fisherman",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["text"]
+        },
+        {
+            "id": "huntsman",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "alchemist",
+            "firstNight": ["role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "choirboy",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "cannibal",
+            "firstNight": [],
+            "otherNight": ["text"],
+            "day": []
+        },
+        {
+            "id": "acrobat",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "puzzlemaster",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["player", "player"]
+        },
+        {
+            "id": "golem",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["player"]
+        },
+        {
+            "id": "widow",
+            "firstNight": ["player", "grim"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "fearmonger",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "psychopath",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["player"]
+        },
+        {
+            "id": "marionette",
+            "firstNight": ["role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "lleech",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "alhadikhia",
+            "firstNight": [],
+            "otherNight": ["player", "player", "player"],
+            "day": []
+        },
+        {
+            "id": "vizier",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["bool"]
+        },
+        {
+            "id": "knight",
+            "firstNight": ["player", "player"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "steward",
+            "firstNight": ["player"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "highpriestess",
+            "firstNight": ["player"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "harpy",
+            "firstNight": ["player", "player"],
+            "otherNight": ["player", "player"],
+            "day": []
+        },
+        {
+            "id": "shugenja",
+            "firstNight": ["direction"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "ojo",
+            "firstNight": [],
+            "otherNight": ["role"],
+            "day": []
+        },
+        {
+            "id": "kazali",
+            "firstNight": ["text"],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "villageidiot",
+            "firstNight": ["player", "bool"],
+            "otherNight": ["player", "bool"],
+            "day": []
+        },
+        {
+            "id": "yaggababble",
+            "firstNight": [],
+            "otherNight": ["number"],
+            "day": []
+        },
+        {
+            "id": "summoner",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "ogre",
+            "firstNight": ["player"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "alsaahir",
+            "firstNight": [],
+            "otherNight": [],
+            "day": ["text"]
+        },
+        {
+            "id": "lordoftyphon",
+            "firstNight": [],
+            "otherNight": ["player"],
+            "day": []
+        },
+        {
+            "id": "boffin",
+            "firstNight": ["role"],
+            "otherNight": [],
+            "day": []
+        },
+        {
+            "id": "hermit",
+            "firstNight": ["roles"],
+            "otherNight": [],
+            "day": []
         }
     ]
 }
