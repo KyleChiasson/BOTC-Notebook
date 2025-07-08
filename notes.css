@@ -30,7 +30,7 @@ html {
     background:rgba(0, 0, 0, 0.5);
 }
 
-#popup{
+.popup{
     background-color: var(--paper);
     padding: 30px;
     position: fixed; 

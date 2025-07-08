@@ -25,65 +25,34 @@ function render_popup(){
     let popup = Storage.getItem('popup')
     let popupHtml = document.getElementById('popup')
     let closePopupHtml = document.getElementById('close-popup')
-    popupHtml.classList.remove('hidden')
+    let popupList = document.getElementsByClassName('popup')
+    Array.from(popupList).forEach(e => e.classList.add('hidden'))
     closePopupHtml.classList.remove('hidden')
-    let val = /*html*/``
     switch(popup){
-        case SettingsId: render_settings(popupHtml)
+        case SettingsId: document.getElementById(SettingsId).classList.remove('hidden')
             break
-        case CharacterSheetId: render_character_sheet(popupHtml, JSON.parse(Storage.getItem('characters')))
+        case CharacterSheetId: document.getElementById(CharacterSheetId).classList.remove('hidden')
             break
-        case NightOrderId: render_night_order(popupHtml, JSON.parse(Storage.getItem('characters')))
+        case NightOrderId: document.getElementById(NightOrderId).classList.remove('hidden')
             break
-        case RoleSelectId: render_role_select(popupHtml, Storage.getItem('selected-user'), JSON.parse(Storage.getItem('users')), JSON.parse(Storage.getItem('characters')).map(e => e.name))
+        case RoleSelectId: popupHtml.classList.remove('hidden')
+            render_role_select(popupHtml, Storage.getItem('selected-user'), JSON.parse(Storage.getItem('users')), JSON.parse(Storage.getItem('characters')).map(e => e.name))
             break
-        case DayTokenSelectId: render_day_token_select(popupHtml, JSON.parse(Storage.getItem('users')), Storage.getItem('selected-user'), Storage.getItem('selected-day'))
+        case DayTokenSelectId: popupHtml.classList.remove('hidden')
+            render_day_token_select(popupHtml, JSON.parse(Storage.getItem('users')), Storage.getItem('selected-user'), Storage.getItem('selected-day'))
             break
-        case NightTokenSelectId: render_night_token_select(popupHtml, JSON.parse(Storage.getItem('users')), Storage.getItem('selected-user'), Storage.getItem('selected-day'))
+        case NightTokenSelectId: popupHtml.classList.remove('hidden')
+            render_night_token_select(popupHtml, JSON.parse(Storage.getItem('users')), Storage.getItem('selected-user'), Storage.getItem('selected-day'))
             break
-        case KnownRoleSelectId: render_known_role_select(popupHtml, JSON.parse(Storage.getItem('known-roles')), JSON.parse(Storage.getItem('characters')).map(e => e.name))
+        case KnownRoleSelectId: popupHtml.classList.remove('hidden')
+            render_known_role_select(popupHtml, JSON.parse(Storage.getItem('known-roles')), JSON.parse(Storage.getItem('characters')).map(e => e.name))
             break
         default: {
-            popupHtml.classList.add('hidden')
             closePopupHtml.classList.add('hidden')
-            popupHtml.innerHTML = val
+            popupHtml.innerHTML = ''
             break
         }
     }
-}
-
-function render_settings(popupHtml){
-    popupHtml.innerHTML = /*html*/`
-        <form id="settings-form" onsubmit="return submit_settings()" >
-            <input type="radio" id="tb" name="script" value="tb" checked><label for="tb">Trouble Brewing</label><br>
-            <input type="radio" id="snv" name="script" value="snv"><label for="snv">Sects and Violets</label><br>
-            <input type="radio" id="bmr" name="script" value="bmr"><label for="bmr">Bad Moon Rising</label><br>
-            <input type="radio" id="custom" name="script" value="custom"><label for="custom">Custom</label><br>
-            <label for="custom-script">Custom Script Upload:</label><br>
-            <input type="file" id="custom-script" accept=".json"><br>
-            <label for="count">Player Count: </label><input type="number" id="count" name="count" min="5" max="15"  value="12"><br>
-            <input type="submit" name="submit" id="submit" value="Generate Grim">
-        </form>`
-}
-
-function render_character_sheet(popupHtml, characters){
-    let val = /*html*/`<table id="character-sheet-table">`
-    for(let t = 0; t < Teams.length; t++){
-        val += /*html*/`<tr class="${Teams[t]} underline"><th>${Teams[t][0].toUpperCase() + Teams[t].slice(1)}</th><th></th></tr>`
-        for(let i = 0; i < characters.length; i++)
-            if(characters[i].team == Teams[t])
-                val += /*html*/`<tr class="${Teams[t]}"><td>${characters[i].name}</td><td> -${characters[i].ability}</td></tr>`
-    }
-    popupHtml.innerHTML = val + /*html*/`</table>`
-}
-
-function render_night_order(popupHtml, characters){
-    let fno = characters.concat(BOTC_JSON.roles.filter(e => e.edition == 'special')).filter(e => e.firstNight != 0).sort((a, b) => a.firstNight > b.firstNight)
-    let ono = characters.concat(BOTC_JSON.roles.filter(e => e.edition == 'special')).filter(e => e.otherNight != 0).sort((a, b) => a.otherNight > b.otherNight)
-    let val = /*html*/`<table id="night-order-table"><tr><th class="left underline">First</th><th class="right underline">Other</th></tr>`
-    for(let i = 0; i < Math.max(fno.length, ono.length); i++)
-        val += /*html*/`<tr><td class="${i < fno.length ? fno[i].team : ''}">${i < fno.length ? fno[i].name : ''}</td><td class="${i < ono.length ? ono[i].team : ''} right">${i < ono.length ? ono[i].name : ''}</tr>`
-    popupHtml.innerHTML = val + /*html*/`</table>`
 }
 
 function render_role_select(popupHtml, userIndex, users, labels)
@@ -184,7 +153,7 @@ function menu_callback(optionIndex){
 function get_menu_result(){ return JSON.parse(sessionStorage.getItem('selection')) }
 
 /**
- * Mutator Functions
+ * Initialization Functions
  */
 function submit_settings(){
     let scriptId = document.forms[SettingsId]["script"].value;
@@ -220,8 +189,43 @@ function finish_settings(characters){
     Storage.setItem('days', 0)
     Storage.setItem('known-roles', JSON.stringify([]))
     add_day()
+    generate_character_sheet(characters)
+    generate_night_order(characters)
     close_windows()
 }
+
+function init(){
+    if (!Storage.getItem('users')) open_settings()
+    else{
+        render_page()
+        document.getElementById('other-notes-text').value = Storage.getItem('other-notes') ?? ''
+    }
+}
+
+function generate_character_sheet(characters){
+    let val = '';
+    for(let t = 0; t < Teams.length; t++){
+        val += /*html*/`<tr class="${Teams[t]} underline"><th>${Teams[t][0].toUpperCase() + Teams[t].slice(1)}</th><th></th></tr>`
+        for(let i = 0; i < characters.length; i++)
+            if(characters[i].team == Teams[t])
+                val += /*html*/`<tr class="${Teams[t]}"><td>${characters[i].name}</td><td> -${characters[i].ability}</td></tr>`
+    }
+    document.getElementById('character-sheet-table').innerHTML = val
+}
+
+function generate_night_order(characters){
+    let special = BOTC_JSON.roles.filter(e => e.edition == 'special')
+    let fno = characters.concat(special).filter(e => e.firstNight != 0).sort((a, b) => a.firstNight > b.firstNight)
+    let ono = characters.concat(special).filter(e => e.otherNight != 0).sort((a, b) => a.otherNight > b.otherNight)
+    let val = ''
+    for(let i = 0; i < Math.max(fno.length, ono.length); i++)
+        val += /*html*/`<tr><td class="${i < fno.length ? fno[i].team : ''}">${i < fno.length ? fno[i].name : ''}</td><td class="${i < ono.length ? ono[i].team : ''} right">${i < ono.length ? ono[i].name : ''}</tr>`
+    document.getElementById('night-order-table').innerHTML = val
+}
+
+/**
+ * Mutator Functions
+ */
 
 function set_popup(val){
     switch(Storage.getItem('popup')){
@@ -300,14 +304,6 @@ function open_role_select(userIndex){
     set_popup(RoleSelectId) 
 }
 
-function init(){
-    if (!Storage.getItem('users')) open_settings()
-    else{
-        render_page()
-        document.getElementById('other-notes-text').value = Storage.getItem('other-notes') ?? ''
-    }
-}
-
 function update_name(userIndex){
     let users = JSON.parse(Storage.getItem('users'))
     users[userIndex].name = document.getElementById(`user-${userIndex}-name`).value
@@ -364,6 +360,14 @@ function save_night_note(userIndex, roleIndex, dayNumber){
     let users = JSON.parse(Storage.getItem('users'))
     users[userIndex].roles[roleIndex].nights[dayNumber] = document.getElementById(`user-${userIndex}-role-${roleIndex}-night-${dayNumber}-note`).value
     Storage.setItem('users', JSON.stringify(users))
+}
+
+function save_custom_day_note(userIndex, roleIndex, dayNumber){
+
+}
+
+function save_custom_night_note(userIndex, roleIndex, dayNumber){
+
 }
 
 function save_other_note()
