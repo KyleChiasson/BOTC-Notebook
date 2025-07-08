@@ -217,7 +217,7 @@ function generate_night_order(characters){
     let special = BOTC_JSON.roles.filter(e => e.edition == 'special')
     let fno = characters.concat(special).filter(e => e.firstNight != 0).sort((a, b) => a.firstNight > b.firstNight)
     let ono = characters.concat(special).filter(e => e.otherNight != 0).sort((a, b) => a.otherNight > b.otherNight)
-    let val = ''
+    let val = /*html*/`<tr><th class="left underline">First</th><th class="right underline">Other</th></tr>`
     for(let i = 0; i < Math.max(fno.length, ono.length); i++)
         val += /*html*/`<tr><td class="${i < fno.length ? fno[i].team : ''}">${i < fno.length ? fno[i].name : ''}</td><td class="${i < ono.length ? ono[i].team : ''} right">${i < ono.length ? ono[i].name : ''}</tr>`
     document.getElementById('night-order-table').innerHTML = val
@@ -362,14 +362,6 @@ function save_night_note(userIndex, roleIndex, dayNumber){
     Storage.setItem('users', JSON.stringify(users))
 }
 
-function save_custom_day_note(userIndex, roleIndex, dayNumber){
-
-}
-
-function save_custom_night_note(userIndex, roleIndex, dayNumber){
-
-}
-
 function save_other_note()
 { Storage.setItem('other-notes', document.getElementById('other-notes-text').value) }
 
@@ -391,7 +383,6 @@ function save_known_night_note(roleIndex, dayNumber){
  * Add fabled slot (could be added to known in play)
  * Add role changing (think barber/pithag)
  * Make scalable for other devices
- * Stop rendering multiple times
  * Add grim view
  * Add images?
  * 
