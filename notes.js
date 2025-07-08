@@ -163,12 +163,17 @@ function submit_settings(){
             var file = document.getElementById("custom-script").files[0];
             var fileReader = new FileReader();
             fileReader.onload = function(fileLoadedEvent){ 
-                let script = JSON.parse(fileLoadedEvent.target.result)
-                script.shift()
-                let characters = BOTC_JSON.roles.filter(e => script.includes(e.name))
-                if(characters.length != script.length)
-                    throw this.error;
-                finish_settings(characters)
+                try {
+                    let script = JSON.parse(fileLoadedEvent.target.result)
+                    script.shift()
+                    let characters = BOTC_JSON.roles.filter(e => script.includes(e.id))
+                    let fabled = BOTC_JSON.fabled.filter(e => script.includes(e.id))
+                    if(characters.length + fabled.length != script.length)
+                        throw new SyntaxError();
+                    finish_settings(characters)
+                } catch (error) {
+                    alert("Please upload a valid custom script")
+                }
             }
             fileReader.readAsText(file, "UTF-8");
         } catch (error) {
