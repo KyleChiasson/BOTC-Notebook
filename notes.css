@@ -5,6 +5,7 @@
   --token: rgb(114, 104, 87);
   --good: rgb(52, 76, 185);
   --evil: rgb(153, 9, 9);
+  --gold: rgb(179, 137, 48);
   --text: rgb(94, 69, 54);
   --button: rgb(230, 230, 230);
   --button-border: rgb(192, 192, 192);
@@ -68,6 +69,7 @@ button, select {
 
 .townsfolk, .outsider { color: var(--good); }
 .minion, .demon { color: var(--evil); }
+.fabled { color: var(--gold); }
 
 .underline { text-decoration: underline; }
 

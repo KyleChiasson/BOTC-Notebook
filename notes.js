@@ -8,6 +8,7 @@ const RoleSelectId = 'role-select'
 const DayTokenSelectId = 'day-token-select'
 const NightTokenSelectId = 'night-token-select'
 const KnownRoleSelectId = 'known-role-select'
+const FabledTableId = 'fabled-table'
 const Teams = ['townsfolk', 'outsider', 'minion', 'demon']
 const Storage = sessionStorage
 const DayTokens = ['Nominated', 'Voted', 'Used Dead Vote', 'Exexuted', 'Died', 'Custom Note']
@@ -34,6 +35,8 @@ function render_popup(){
         case CharacterSheetId: document.getElementById(CharacterSheetId).classList.remove('hidden')
             break
         case NightOrderId: document.getElementById(NightOrderId).classList.remove('hidden')
+            break
+        case FabledTableId: document.getElementById(FabledTableId).classList.remove('hidden')
             break
         case RoleSelectId: popupHtml.classList.remove('hidden')
             render_role_select(popupHtml, Storage.getItem('selected-user'), JSON.parse(Storage.getItem('users')), JSON.parse(Storage.getItem('characters')).map(e => e.name))
@@ -166,13 +169,17 @@ function submit_settings(){
                 try {
                     let script = JSON.parse(fileLoadedEvent.target.result)
                     script.shift()
-                    let characters = BOTC_JSON.roles.filter(e => script.includes(e.id))
+                    let fabledIds = BOTC_JSON.fabled.map(e => e.id)
+                    let travelerIds = BOTC_JSON.roles.filter(e => e.team == "traveller").map(e => e.id)
+                    let characters = script.filter(e => !fabledIds.includes(e) && !travelerIds.includes(e)).map(z => BOTC_JSON.roles.filter(e => e.id == z)[0])
                     let fabled = BOTC_JSON.fabled.filter(e => script.includes(e.id))
-                    if(characters.length + fabled.length != script.length)
+                    let travelers = script.filter(e => travelerIds.includes(e)).map(z => BOTC_JSON.roles.filter(e => e.id == z)[0])
+                    if(characters.length + fabled.length + travelers.length != script.length)
                         throw new SyntaxError();
-                    finish_settings(characters)
+                    finish_settings(characters, JSON.parse(fileLoadedEvent.target.result), fabled)
                 } catch (error) {
                     alert("Please upload a valid custom script")
+                    console.log(error)
                 }
             }
             fileReader.readAsText(file, "UTF-8");
@@ -182,11 +189,11 @@ function submit_settings(){
         }
     }
     else
-        finish_settings(BOTC_JSON.roles.filter(e => e.edition == scriptId && e.team != 'traveller'))
+        finish_settings(BOTC_JSON.roles.filter(e => e.edition == scriptId && e.team != 'traveller'), [], [])
     return false
 }
 
-function finish_settings(characters){
+function finish_settings(characters, originalScript, fabled){
     let users = []
     for(let i = 0; i < document.forms[SettingsId]["count"].value; i++)
         users.push({"name": `Player ${i + 1}`, "alignment": 'good', 'roles': [], 'nights': [], 'days': []})
@@ -197,6 +204,7 @@ function finish_settings(characters){
     add_day()
     generate_character_sheet(characters)
     generate_night_order(characters)
+    generate_fabled(characters, originalScript, fabled)
     close_windows()
 }
 
@@ -227,6 +235,30 @@ function generate_night_order(characters){
     for(let i = 0; i < Math.max(fno.length, ono.length); i++)
         val += /*html*/`<tr><td class="${i < fno.length ? fno[i].team : ''}">${i < fno.length ? fno[i].name : ''}</td><td class="${i < ono.length ? ono[i].team : ''} right">${i < ono.length ? ono[i].name : ''}</tr>`
     document.getElementById('night-order-table').innerHTML = val
+}
+
+function generate_fabled(characters, script, fabled){
+    let fabledHtml = document.getElementById(FabledTableId)
+    fabledHtml.innerHTML = /*html*/`<tr><td>You Have No Fabled Characters</td></tr>`
+    if(fabled.length > 0){
+        let val = /*html*/`<tr><td class="underline">Fabled</td><td></td></tr>`
+        for(let i = 0; i < fabled.length; i++){
+            val += /*html*/`<tr><td>${fabled[i].name}</td><td>-${fabled[i].ability}</td></tr>`
+            if(fabled[i].id == "bootlegger")
+                for(let a = 0; a < (script[0].bootlegger.length ?? 0); a++)
+                    val += /*html*/`<tr><td></td><td>•${script[0].bootlegger[a]}</td></tr>`
+            if(fabled[i].id == "djinn"){
+                let characterIds = characters.map(e => e.id)
+                let jinxes = characters.filter(e => e.jinxes !== undefined).map(e => e.jinxes.filter(j => characterIds.includes(j.id)).map(j => { return {"id1":e.id, "id2":j.id, "reason":j.reason} })).flat();
+                val += /*html*/`<td></td><td><table class="fabled">`
+                for(let i = 0; i < jinxes.length; i++)
+                    val += /*html*/`<tr><td>•</td><td class="${characters.find(e => e.id == jinxes[i].id1).team}">${jinxes[i].id1}</td><td class="${characters.find(e => e.id == jinxes[i].id2).team}">${jinxes[i].id2}</td><td>: ${jinxes[i].reason}</td></tr>`
+                val += /*html*/`</table></td>`
+            }
+
+        }
+        fabledHtml.innerHTML = val
+    }
 }
 
 /**
@@ -303,6 +335,7 @@ function close_windows() { if(Storage.getItem('characters') != null) set_popup('
 function open_settings() { set_popup(SettingsId) }
 function open_character_sheet(){ set_popup(CharacterSheetId) }
 function open_night_order(){ set_popup(NightOrderId) }
+function open_fabled(){ set_popup(FabledTableId) }
 
 function open_role_select(userIndex){ 
     Storage.setItem('selected-user', userIndex)
@@ -397,13 +430,15 @@ function save_custom_night(userIndex, dayNumber){
 /**
  * Todo:
  * Replace role notes with actual info (will have to handle new instances of abilities)
- * Add fabled slot (could be added to known in play)
  * Add role changing (think barber/pithag)
  * Make scalable for other devices
  * Add grim view
  * Add images?
  * Add Jinxes
  * Add Role Amounts
+ * Option to export state of notebook
+ * put character select in correct order
+ * Reloading page clears html!!!
  */
 
 /**
