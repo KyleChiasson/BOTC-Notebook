@@ -85,15 +85,8 @@ function render_notes(){
         <tr><td>Known Roles:</td><td></td><td><button onclick="set_popup('${KnownRoleSelectId}')">+</button></td></tr>`
     let known = JSON.parse(Storage.getItem('known-roles'))
     if(known)
-        for(let i = 0; i < known.length; i++){
-            val += /*html*/`<tr><td></td><td></td><td>${known[i].name}</td>`
-            for(let a = 0; a < days; a++){
-                val += /*html*/`
-                    <td><input type="text" id="known-${i}-night-${a}-note" onchange="save_known_night_note(${i}, ${a})" value="${known[i].nights[a]}"></td>
-                    <td><input type="text" id="known-${i}-day-${a}-note" onchange="save_known_day_note(${i}, ${a})" value="${known[i].days[a]}"></td>`
-            }
-            val += /*html*/`</tr>`
-        }
+        for(let i = 0; i < known.length; i++)
+            val += render_known_role(known[i], days, i)
     document.getElementById('notes-table').innerHTML = val
 }
 
@@ -147,6 +140,30 @@ function render_role(user, role, a){
             else val += /*html*/`<td></td>`
             if(addition.day.length > 0)
                 val += /*html*/`<td><input type="text" id="user-${user.seat}-role-${a}-day-${b}-note"   onchange="save_day_note(${user.seat}, ${a}, ${b})"   value="${role.days[b]}"  ></td>`
+            else val += /*html*/`<td></td>`
+        }
+    }
+    return val + /*html*/`</tr>`
+}
+
+function render_known_role(role, days, i){
+    let val = /*html*/`<tr><td></td><td></td><td>${role.name}</td>`
+    let addition = ADDITIONS_JSON.roles.find(e => e.id == BOTC_JSON.roles.find(r => r.name == role.name).id)
+    if(addition){
+        if(days > 0){
+            if(addition.firstNight.length > 0)
+                val += /*html*/`<td><input type="text" id="known-${i}-night-0-note" onchange="save_known_night_note(${i}, 0)" value="${role.nights[0]}"></td>`
+            else val += /*html*/`<td></td>`
+            if(addition.day.length > 0)
+                val += /*html*/`<td><input type="text" id="known-${i}-day-0-note" onchange="save_known_day_note(${i}, 0)" value="${role.days[0]}"></td>`
+            else val += /*html*/`<td></td>`
+        }
+        for(let a = 1; a < days; a++){
+            if(addition.otherNight.length > 0)
+                val += /*html*/`<td><input type="text" id="known-${i}-night-${a}-note" onchange="save_known_night_note(${i}, ${a})" value="${role.nights[a]}"></td>`
+            else val += /*html*/`<td></td>`
+            if(addition.day.length > 0)
+                val += /*html*/`<td><input type="text" id="known-${i}-day-${a}-note" onchange="save_known_day_note(${i}, ${a})" value="${role.days[a]}"></td>`
             else val += /*html*/`<td></td>`
         }
     }
