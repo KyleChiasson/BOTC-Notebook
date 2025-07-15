@@ -285,69 +285,81 @@ function generate_fabled(characters, script, fabled){
  */
 function set_popup(val){
     switch(Storage.getItem('popup')){
-        case RoleSelectId: {
-            let list = get_menu_result()
-            let userIndex = Storage.getItem('selected-user')
-            let users = JSON.parse(Storage.getItem('users'))
-            let oldList = users[userIndex].roles
-            let dayCount = Storage.getItem('days')
-            users[userIndex].roles = []
-            for(let i = 0; i < list.length; i++)
-                if(list[i].selected)
-                    if(oldList.map(e => e.name).includes(list[i].name))
-                        users[userIndex].roles.push(oldList.find(e => e.name == list[i].name))
-                    else{
-                        let last = users[userIndex].roles.length
-                        users[userIndex].roles.push({'name': list[i].name, 'nights': [], 'days': []})
-                        for(let a = 0; a < dayCount; a++){
-                            users[userIndex].roles[last].nights.push('')
-                            users[userIndex].roles[last].days.push('')
-                        }
-                    }
-            Storage.setItem('users', JSON.stringify(users))
+        case RoleSelectId:
+            finalize_role_select()
             break
-        }
-        case DayTokenSelectId: {
-            let list = get_menu_result()
-            let userIndex = Storage.getItem('selected-user')
-            let dayIndex = Storage.getItem('selected-day')
-            let users = JSON.parse(Storage.getItem('users'))
-            users[userIndex].days[dayIndex].notes = list.filter(e => e.selected).map(e => e.name)
-            Storage.setItem('users', JSON.stringify(users))
+        case DayTokenSelectId:
+            finalize_day_token_select()
             break
-        }
-        case NightTokenSelectId: {
-            let list = get_menu_result()
-            let userIndex = Storage.getItem('selected-user')
-            let dayIndex = Storage.getItem('selected-day')
-            let users = JSON.parse(Storage.getItem('users'))
-            users[userIndex].nights[dayIndex].notes = list.filter(e => e.selected).map(e => e.name)
-            Storage.setItem('users', JSON.stringify(users))
+        case NightTokenSelectId:
+            finalize_night_token_select()
             break
-        }
-        case KnownRoleSelectId: {
-            let list = get_menu_result()
-            let known = []
-            let oldList = JSON.parse(Storage.getItem('known-roles'))
-            let dayCount = Storage.getItem('days')
-            for(let i = 0; i < list.length; i++)
-                if(list[i].selected)
-                    if(oldList.map(e => e.name).includes(list[i].name))
-                        known.push(oldList.find(e => e.name == list[i].name))
-                    else{
-                        let last = known.length
-                        known.push({'name': list[i].name, 'nights': [], 'days': []})
-                        for(let a = 0; a < dayCount; a++){
-                            known[last].nights.push('')
-                            known[last].days.push('')
-                        }
-                    }
-            Storage.setItem('known-roles', JSON.stringify(known))
+        case KnownRoleSelectId:
+            finalize_known_role_select()
             break
-        }
     }
     Storage.setItem('popup', val)
     render_page()
+}
+
+function finalize_role_select(){
+    let list = get_menu_result()
+    let userIndex = Storage.getItem('selected-user')
+    let users = JSON.parse(Storage.getItem('users'))
+    let oldList = users[userIndex].roles
+    let dayCount = Storage.getItem('days')
+    users[userIndex].roles = []
+    for(let i = 0; i < list.length; i++)
+        if(list[i].selected)
+            if(oldList.map(e => e.name).includes(list[i].name))
+                users[userIndex].roles.push(oldList.find(e => e.name == list[i].name))
+            else{
+                let last = users[userIndex].roles.length
+                users[userIndex].roles.push({'name': list[i].name, 'nights': [], 'days': []})
+                for(let a = 0; a < dayCount; a++){
+                    users[userIndex].roles[last].nights.push('')
+                    users[userIndex].roles[last].days.push('')
+                }
+            }
+    Storage.setItem('users', JSON.stringify(users))
+}
+
+function finalize_day_token_select(){
+    let list = get_menu_result()
+    let userIndex = Storage.getItem('selected-user')
+    let dayIndex = Storage.getItem('selected-day')
+    let users = JSON.parse(Storage.getItem('users'))
+    users[userIndex].days[dayIndex].notes = list.filter(e => e.selected).map(e => e.name)
+    Storage.setItem('users', JSON.stringify(users))
+}
+
+function finalize_night_token_select(){
+    let list = get_menu_result()
+    let userIndex = Storage.getItem('selected-user')
+    let dayIndex = Storage.getItem('selected-day')
+    let users = JSON.parse(Storage.getItem('users'))
+    users[userIndex].nights[dayIndex].notes = list.filter(e => e.selected).map(e => e.name)
+    Storage.setItem('users', JSON.stringify(users))
+}
+
+function finalize_known_role_select(){
+    let list = get_menu_result()
+    let known = []
+    let oldList = JSON.parse(Storage.getItem('known-roles'))
+    let dayCount = Storage.getItem('days')
+    for(let i = 0; i < list.length; i++)
+        if(list[i].selected)
+            if(oldList.map(e => e.name).includes(list[i].name))
+                known.push(oldList.find(e => e.name == list[i].name))
+            else{
+                let last = known.length
+                known.push({'name': list[i].name, 'nights': [], 'days': []})
+                for(let a = 0; a < dayCount; a++){
+                    known[last].nights.push('')
+                    known[last].days.push('')
+                }
+            }
+    Storage.setItem('known-roles', JSON.stringify(known))
 }
 
 function close_windows() { if(Storage.getItem('characters') != null) set_popup('') }
