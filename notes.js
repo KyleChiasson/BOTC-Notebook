@@ -39,16 +39,16 @@ function render_popup(){
         case FabledTableId: document.getElementById(FabledTableId).classList.remove('hidden')
             break
         case RoleSelectId: popupHtml.classList.remove('hidden')
-            render_role_select(popupHtml, Storage.getItem('selected-user'), JSON.parse(Storage.getItem('users')), JSON.parse(Storage.getItem('characters')).map(e => e.name))
+            render_role_select(popupHtml, JSON.parse(Storage.getItem('users'))[Storage.getItem('selected-user')], JSON.parse(Storage.getItem('characters')).map(e => e.name), JSON.parse(Storage.getItem('characters')).map(e => e.team))
             break
         case DayTokenSelectId: popupHtml.classList.remove('hidden')
-            render_day_token_select(popupHtml, JSON.parse(Storage.getItem('users')), Storage.getItem('selected-user'), Storage.getItem('selected-day'))
+            render_day_token_select(popupHtml, JSON.parse(Storage.getItem('users'))[Storage.getItem('selected-user')], Storage.getItem('selected-day'))
             break
         case NightTokenSelectId: popupHtml.classList.remove('hidden')
-            render_night_token_select(popupHtml, JSON.parse(Storage.getItem('users')), Storage.getItem('selected-user'), Storage.getItem('selected-day'))
+            render_night_token_select(popupHtml, JSON.parse(Storage.getItem('users'))[Storage.getItem('selected-user')], Storage.getItem('selected-day'))
             break
         case KnownRoleSelectId: popupHtml.classList.remove('hidden')
-            render_known_role_select(popupHtml, JSON.parse(Storage.getItem('known-roles')), JSON.parse(Storage.getItem('characters')).map(e => e.name))
+            render_known_role_select(popupHtml, JSON.parse(Storage.getItem('known-roles')), JSON.parse(Storage.getItem('characters')).map(e => e.name), JSON.parse(Storage.getItem('characters')).map(e => e.team))
             break
         default: {
             closePopupHtml.classList.add('hidden')
@@ -58,17 +58,17 @@ function render_popup(){
     }
 }
 
-function render_role_select(popupHtml, userIndex, users, labels)
-{ popupHtml.innerHTML = generate_menu(labels, labels.map(e => users[userIndex].roles.map(a => a.name).includes(e))) }
+function render_role_select(popupHtml, user, labels, classes)
+{ popupHtml.innerHTML = generate_menu(labels, labels.map(e => user.roles.map(a => a.name).includes(e)), classes) }
 
-function render_day_token_select(popupHtml, users, userIndex, dayIndex)
-{ popupHtml.innerHTML = generate_menu(DayTokens, DayTokens.map(e => users[userIndex].days[dayIndex].notes.includes(e))) }
+function render_day_token_select(popupHtml, user, dayIndex)
+{ popupHtml.innerHTML = generate_menu(DayTokens, DayTokens.map(e => user.days[dayIndex].notes.includes(e))) }
 
-function render_night_token_select(popupHtml, users, userIndex, dayIndex)
-{ popupHtml.innerHTML = generate_menu(NightTokens, NightTokens.map(e => users[userIndex].nights[dayIndex].notes.includes(e))) }
+function render_night_token_select(popupHtml, user, dayIndex)
+{ popupHtml.innerHTML = generate_menu(NightTokens, NightTokens.map(e => user.nights[dayIndex].notes.includes(e))) }
 
-function render_known_role_select(popupHtml, known, labels)
-{ popupHtml.innerHTML = generate_menu(labels, labels.map(e => known.map(a => a.name).includes(e))) }
+function render_known_role_select(popupHtml, known, labels, classes)
+{ popupHtml.innerHTML = generate_menu(labels, labels.map(e => known.map(a => a.name).includes(e)), classes) }
 
 function render_notes(){
     let val = /*html*/`<tr><th>Name</th><th>Alignment</th><th>Role</th>`
@@ -78,44 +78,8 @@ function render_notes(){
     val += /*html*/`<th><button onclick="add_day()">+</button></th></tr>`
     let users = JSON.parse(Storage.getItem('users'))
     if(users)
-        for(let i = 0; i < users.length; i++){
-            val += /*html*/`
-                <tr>
-                    <td class="${users[i].alignment}"><input type="text" id="user-${i}-name" value="${users[i].name}" onchange="update_name(${i})"></td>
-                    <td class="${users[i].alignment}"><select id="user-${i}-alignment" onchange="update_alignment(${i})"><option value="good"${users[i].alignment == 'good' ? ' selected' : ''}>Good</option><option value="evil"${users[i].alignment == 'evil' ? ' selected' : ''}>Evil</option></select></td>
-                    <td class="${users[i].alignment}"><button onclick="open_role_select(${i})">+</button></td>`
-
-            for(let a = 0; a < days; a++){
-                val += /*html*/`<td class="${users[i].alignment}">`
-                for(let b = 0; b < users[i].nights[a].notes.length; b++)
-                    if(users[i].nights[a].notes[b] == 'Custom Note')
-                        val += /*html*/`<input type="text" id="user-${i}-night-${a}-custom-note" value="${users[i].nights[a].custom}" onchange="save_custom_night(${i}, ${a})">`
-                    else
-                        val += /*html*/`<a class="token">${users[i].nights[a].notes[b]}</a>`
-                val += /*html*/`<button onclick="add_night_note(${i}, ${a})">+</button></td><td class="${users[i].alignment}">`
-
-                for(let b = 0; b < users[i].days[a].notes.length; b++)
-                    if(users[i].days[a].notes[b] == 'Custom Note')
-                        val += /*html*/`<input type="text" id="user-${i}-day-${a}-custom-note" value="${users[i].days[a].custom}" onchange="save_custom_day(${i}, ${a})">`
-                    else
-                        val += /*html*/`<a class="token">${users[i].days[a].notes[b]}</a>`
-                val += /*html*/`<button onclick="add_day_note(${i}, ${a})">+</button></td>`
-            }
-            val += /*html*/`<td class="${users[i].alignment}"></td></tr>`
-            for(let a = 0; a < users[i].roles.length; a++){
-                val += /*html*/`<tr><td></td><td></td><td>${users[i].roles[a].name}</td>`
-                for(let b = 0; b < days; b++){
-                    val += /*html*/`
-                        <td><input type="text" id="user-${i}-role-${a}-night-${b}-note" onchange="save_night_note(${i}, ${a}, ${b})" value="${users[i].roles[a].nights[b]}"></td>
-                        <td><input type="text" id="user-${i}-role-${a}-day-${b}-note" onchange="save_day_note(${i}, ${a}, ${b})" value="${users[i].roles[a].days[b]}"></td>`
-                }
-                val += /*html*/`</tr>`
-            }
-            val += /*html*/`<tr><td class="${users[i].alignment}"></td><td class="${users[i].alignment}"></td><td class="${users[i].alignment}"></td>`
-            for(let a = 0; a < days; a++)
-                val += /*html*/`<td class="${users[i].alignment}"></td><td class="${users[i].alignment}"></td>`
-            val += /*html*/`<td class="${users[i].alignment}"></td></tr>`
-        }
+        for(let i = 0; i < users.length; i++)
+            val += render_user(users[i])
     val += /*html*/`
         <tr><td></td></tr>
         <tr><td></td></tr>
@@ -134,15 +98,57 @@ function render_notes(){
     document.getElementById('notes-table').innerHTML = val
 }
 
+function render_user(user){
+    let val = /*html*/`
+        <tr>
+            <td class="${user.alignment}"><input type="text" id="user-${user.seat}-name" value="${user.name}" onchange="update_name(${user.seat})"></td>
+            <td class="${user.alignment}"><select id="user-${user.seat}-alignment" onchange="update_alignment(${user.seat})"><option value="good"${user.alignment == 'good' ? ' selected' : ''}>Good</option><option value="evil"${user.alignment == 'evil' ? ' selected' : ''}>Evil</option></select></td>
+            <td class="${user.alignment}"><button onclick="open_role_select(${user.seat})">+</button></td>`
+
+    for(let a = 0; a < user.days.length; a++){
+        val += /*html*/`<td class="${user.alignment}">`
+        for(let b = 0; b < user.nights[a].notes.length; b++)
+            if(user.nights[a].notes[b] == 'Custom Note')
+                val += /*html*/`<input type="text" id="user-${user.seat}-night-${a}-custom-note" value="${user.nights[a].custom}" onchange="save_custom_night(${user.seat}, ${a})">`
+            else
+                val += /*html*/`<a class="token">${user.nights[a].notes[b]}</a>`
+        val += /*html*/`<button onclick="add_night_note(${user.seat}, ${a})">+</button></td><td class="${user.alignment}">`
+
+        for(let b = 0; b < user.days[a].notes.length; b++)
+            if(user.days[a].notes[b] == 'Custom Note')
+                val += /*html*/`<input type="text" id="user-${user.seat}-day-${a}-custom-note" value="${user.days[a].custom}" onchange="save_custom_day(${user.seat}, ${a})">`
+            else
+                val += /*html*/`<a class="token">${user.days[a].notes[b]}</a>`
+        val += /*html*/`<button onclick="add_day_note(${user.seat}, ${a})">+</button></td>`
+    }
+    val += /*html*/`<td class="${user.alignment}"></td></tr>`
+    for(let a = 0; a < user.roles.length; a++)
+        val += render_role(user, user.roles[a], a)
+    val += /*html*/`<tr><td class="${user.alignment}"></td><td class="${user.alignment}"></td><td class="${user.alignment}"></td>`
+    for(let a = 0; a < user.days.length; a++)
+        val += /*html*/`<td class="${user.alignment}"></td><td class="${user.alignment}"></td>`
+    return val + /*html*/`<td class="${user.alignment}"></td></tr>`
+}
+
+function render_role(user, role, a){
+    let val = /*html*/`<tr><td></td><td></td><td>${role.name}</td>`
+    for(let b = 0; b < user.days.length; b++){
+        val += /*html*/`
+            <td><input type="text" id="user-${user.seat}-role-${a}-night-${b}-note" onchange="save_night_note(${user.seat}, ${a}, ${b})" value="${role.nights[b]}"></td>
+            <td><input type="text" id="user-${user.seat}-role-${a}-day-${b}-note"   onchange="save_day_note(${user.seat}, ${a}, ${b})"   value="${role.days[b]}"  ></td>`
+    }
+    return val + /*html*/`</tr>`
+}
+
 /**
  * Select Menu Functions
  */
-function generate_menu(options, selected){
+function generate_menu(options, selected, classes){
     let list = []
     let html = /*html*/`<div name="selection">`
     for(let i = 0; i < options.length; i++){
         list.push({'name': options[i], 'selected': selected[i]})
-        html += /*html*/`<input type="checkbox" id="select-${i}" onchange="menu_callback(${i})"${selected[i] ? " checked" : ""}><label for="select_${i}">${options[i]}</label><br>`
+        html += /*html*/`<input type="checkbox" id="select-${i}" onchange="menu_callback(${i})"${selected[i] ? " checked" : ""}><label for="select_${i}" class="${classes ? classes[i] : ""}">${options[i]}</label><br>`
     }
     sessionStorage.setItem('selection', JSON.stringify(list))
     return html + /*html*/`</div>`
@@ -196,7 +202,7 @@ function submit_settings(){
 function finish_settings(characters, originalScript, fabled){
     let users = []
     for(let i = 0; i < document.forms[SettingsId]["count"].value; i++)
-        users.push({"name": `Player ${i + 1}`, "alignment": 'good', 'roles': [], 'nights': [], 'days': []})
+        users.push({"name": `Player ${i + 1}`, "seat": i, "alignment": 'good', 'roles': [], 'nights': [], 'days': []})
     Storage.setItem('characters', JSON.stringify(characters))
     Storage.setItem('users', JSON.stringify(users))
     Storage.setItem('days', 0)
@@ -434,7 +440,6 @@ function save_custom_night(userIndex, dayNumber){
  * Make scalable for other devices
  * Add grim view
  * Add images?
- * Add Jinxes
  * Add Role Amounts
  * Option to export state of notebook
  * put character select in correct order

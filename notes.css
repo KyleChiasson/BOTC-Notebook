@@ -3,9 +3,6 @@
   --paper: rgb(255, 255, 235);
   --paper-highlight: rgb(233, 233, 210);
   --token: rgb(114, 104, 87);
-  --good: rgb(52, 76, 185);
-  --evil: rgb(153, 9, 9);
-  --gold: rgb(179, 137, 48);
   --text: rgb(94, 69, 54);
   --button: rgb(230, 230, 230);
   --button-border: rgb(192, 192, 192);
@@ -67,9 +64,11 @@ button, select {
     border-radius: 5px;
 }
 
-.townsfolk, .outsider { color: var(--good); }
-.minion, .demon { color: var(--evil); }
-.fabled { color: var(--gold); }
+.townsfolk  { color: rgb(9, 67, 153); }
+.outsider   { color: rgb(9, 153, 153); }
+.minion     { color: rgb(153, 74, 9); }
+.demon      { color: rgb(153, 9, 9); }
+.fabled     { color: rgb(153, 127, 9); }
 
 .underline { text-decoration: underline; }
 
