@@ -78,8 +78,7 @@ function render_notes(){
     val += /*html*/`<th><button onclick="add_day()">+</button></th></tr>`
     let users = JSON.parse(Storage.getItem('users'))
     if(users)
-        for(let i = 0; i < users.length; i++)
-            val += render_user(users[i])
+        users.forEach(user => val += render_user(user))
     val += /*html*/`
         <tr><td></td></tr>
         <tr><td></td></tr>
@@ -132,10 +131,24 @@ function render_user(user){
 
 function render_role(user, role, a){
     let val = /*html*/`<tr><td></td><td></td><td>${role.name}</td>`
-    for(let b = 0; b < user.days.length; b++){
-        val += /*html*/`
-            <td><input type="text" id="user-${user.seat}-role-${a}-night-${b}-note" onchange="save_night_note(${user.seat}, ${a}, ${b})" value="${role.nights[b]}"></td>
-            <td><input type="text" id="user-${user.seat}-role-${a}-day-${b}-note"   onchange="save_day_note(${user.seat}, ${a}, ${b})"   value="${role.days[b]}"  ></td>`
+    let addition = ADDITIONS_JSON.roles.find(e => e.id == BOTC_JSON.roles.find(r => r.name == role.name).id)
+    if(addition){
+        if(user.days.length > 0){
+            if(addition.firstNight.length > 0)
+                val += /*html*/`<td><input type="text" id="user-${user.seat}-role-${a}-night-0-note" onchange="save_night_note(${user.seat}, ${a}, 0)" value="${role.nights[0]}"></td>`
+            else val += /*html*/`<td></td>`
+            if(addition.day.length > 0)
+                val += /*html*/`<td><input type="text" id="user-${user.seat}-role-${a}-day-0-note"   onchange="save_day_note(${user.seat}, ${a}, 0)"   value="${role.days[0]}"  ></td>`
+            else val += /*html*/`<td></td>`
+        }
+        for(let b = 1; b < user.days.length; b++){
+            if(addition.otherNight.length > 0)
+                val += /*html*/`<td><input type="text" id="user-${user.seat}-role-${a}-night-${b}-note" onchange="save_night_note(${user.seat}, ${a}, ${b})" value="${role.nights[b]}"></td>`
+            else val += /*html*/`<td></td>`
+            if(addition.day.length > 0)
+                val += /*html*/`<td><input type="text" id="user-${user.seat}-role-${a}-day-${b}-note"   onchange="save_day_note(${user.seat}, ${a}, ${b})"   value="${role.days[b]}"  ></td>`
+            else val += /*html*/`<td></td>`
+        }
     }
     return val + /*html*/`</tr>`
 }
@@ -442,7 +455,6 @@ function save_custom_night(userIndex, dayNumber){
  * Add images?
  * Add Role Amounts
  * Option to export state of notebook
- * put character select in correct order
  * Reloading page clears html!!!
  */
 
@@ -4664,4 +4676,11 @@ const ADDITIONS_JSON = {
             "day": []
         }
     ]
+}
+
+const CharacterCounts = {
+    "townsfolk":    [0, 0, 0, 0, 0, 3, 3, 5, 5, 5, 7, 7, 7, 9, 9, 9],
+    "outsiders":    [0, 0, 0, 0, 0, 0, 1, 0, 1, 2, 0, 1, 2, 0, 1, 2],
+    "minions":      [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3],
+    "demons":       [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 }
